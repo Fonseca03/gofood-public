@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>GoFood</title>
+  <style>
+        :root {
+      --fondo: #FAF6EF;
+      --texto: #2A2420;
+      --acento: #FF8000;
+      --acento-claro: #FFA01A;
+      --acento-oscuro: #E66800;
+      --acento-texto: #FFFFFF;
+      --abierto: #5C6B3F;
+      --cerrado: #A13D3D;
+      --borde: #E4DACB;
+    }
+    [data-tema="oscuro"] {
+      --fondo: #121212;
+      --texto: #EFEFEF;
+      --acento: #FFA01A;
+      --acento-claro: #FFB84D;
+      --acento-oscuro: #FF8000;
+      --acento-texto: #121212;
+      --abierto: #93A76A;
+      --cerrado: #C97070;
+      --borde: #2E2E2E;
+    }
+    body {
+      font-family: 'Inter', Arial, sans-serif;
+      max-width: 700px;
+      margin: 40px auto;
+      padding: 0 20px;
+      background: var(--fondo);
+      color: var(--texto);
+      transition: background 0.2s, color 0.2s;
+    }
+    img { max-width: 200px; margin: 5px; border-radius: 8px; }
+    .plato {
+      border-bottom: 1px solid var(--borde);
+      padding: 10px 0;
+    }
+    a.volver {
+      display: inline-block;
+      margin-bottom: 20px;
+      color: var(--texto);
+    }
+    .estado-abierto { color: var(--abierto); font-weight: bold; }
+    .estado-cerrado { color: var(--cerrado); font-weight: bold; }
+        .boton-llegar {
+      display: inline-block;
+      background: linear-gradient(180deg, var(--acento-claro), var(--acento-oscuro));
+      color: var(--acento-texto);
+      padding: 14px 28px;
+      font-size: 16px;
+      border-radius: 6px;
+      text-decoration: none;
+      margin-top: 10px;
+      font-weight: bold;
+      box-shadow: 0 1.5px 3px rgba(0, 0, 0, 0.25);
+      transform: scale(1);
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+    .boton-llegar:hover { opacity: 0.95; }
+    .boton-llegar:active {
+      transform: scale(0.97);
+      box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.35);
+    }
+    .header-superior {
+      position: relative;
+      margin-bottom: 20px;
+    }
+    #boton-tema {
+      background: transparent;
+      color: var(--texto);
+      border: 1px solid var(--borde);
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      position: absolute;
+      top: 0;
+      right: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header-superior">
+    <button id="boton-tema" onclick="cambiarTema()">🌙 Modo oscuro</button>
+    <img src="logo.png" alt="GoFood" style="display: block; margin: 0 auto; max-height: 200px;">
+  </div>
+
+  <a class="volver" href="index.html">← Volver a la búsqueda</a>
+  <div id="contenido">Cargando...</div>
+
+  <script>
+    const API_URL = "https://gofood-api-production.up.railway.app";
+
+    // Sacamos el id del restaurante de la URL, por ejemplo: restaurante.html?id=abc-123
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+
+    async function cargarDetalle() {
+      if (!id) {
+        document.getElementById("contenido").innerHTML = "<p>No se especificó un restaurante.</p>";
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_URL}/api/restaurants/${id}`);
+
+        if (!response.ok) {
+          document.getElementById("contenido").innerHTML = "<p>No se encontró el restaurante.</p>";
+          return;
+        }
+
+        const r = await response.json();
+        const claseEstado = r.isOpen ? "estado-abierto" : "estado-cerrado";
+        const textoEstado = r.isOpen ? "Abierto" : "Cerrado";
+
+        let html = `<h1>${r.name}</h1>`;
+        html += `<p>${r.description ?? "Sin descripción"}</p>`;
+        
+        // Validación de Dirección
+        const direccionTexto = r.address && r.address.trim() !== "" ? r.address : "No especificada";
+        html += `<p><strong>Dirección:</strong> ${direccionTexto}</p>`;
+        
+        // Validación de WhatsApp / Teléfono
+        if (r.phone && r.phone.trim() !== "") {
+          const telefonoLimpio = r.phone.replace(/[^0-9]/g, "");
+          const linkWhatsapp = `https://wa.me/${telefonoLimpio}`;
+          html += `<p><strong>WhatsApp:</strong> <a href="${linkWhatsapp}" target="_blank" style="color: var(--acento); text-decoration: none;">${r.phone}</a></p>`;
+        } else {
+          html += `<p><strong>WhatsApp:</strong> No especificado</p>`;
+        }
+
+        html += `<p><strong>Estado:</strong> <span class="${claseEstado}">${textoEstado}</span></p>`;
+
+        if (r.socialMediaLink) {
+          html += `<p><strong>Redes:</strong> <a href="${r.socialMediaLink}" target="_blank">${r.socialMediaLink}</a></p>`;
+        }
+
+        // Validación de Coordenadas para el botón "Cómo llegar"
+        if (r.latitude != null && r.longitude != null) {
+          const linkMaps = `https://www.google.com/maps/search/?api=1&query=${r.latitude},${r.longitude}`;
+          html += `<a class="boton-llegar" href="${linkMaps}" target="_blank">📍 Cómo llegar</a>`;
+        }
+
+        html += `<h2>Fotos del menú</h2>`;
+        if (r.menuPhotos.length === 0) {
+          html += `<p>No hay fotos cargadas.</p>`;
+        } else {
+          r.menuPhotos.forEach(foto => {
+            html += `<img src="${foto.url}">`;
+          });
+        }
+
+        html += `<h2>Platos</h2>`;
+        if (r.menuItems.length === 0) {
+          html += `<p>No hay platos cargados.</p>`;
+        } else {
+          r.menuItems.forEach(item => {
+            html += `<div class="plato"><strong>${item.name}</strong> - $${item.price}<br>${item.description ?? ""}</div>`;
+          });
+        }
+
+        document.getElementById("contenido").innerHTML = html;
+      } catch (err) {
+        document.getElementById("contenido").innerHTML = "<p>No se pudo conectar con la API.</p>";
+      }
+    }
+
+    function aplicarTema(tema) {
+      document.documentElement.setAttribute("data-tema", tema);
+      document.getElementById("boton-tema").textContent = tema === "oscuro" ? "☀️ Modo claro" : "🌙 Modo oscuro";
+      localStorage.setItem("tema", tema);
+    }
+
+    function cambiarTema() {
+      const temaActual = document.documentElement.getAttribute("data-tema");
+      aplicarTema(temaActual === "oscuro" ? "claro" : "oscuro");
+    }
+
+    aplicarTema(localStorage.getItem("tema") || "claro");
+
+    cargarDetalle();
+  </script>
+
+</body>
+</html>

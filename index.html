@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>GoFood</title>
+  <style>
+        :root {
+      --fondo: #FAF6EF;
+      --texto: #2A2420;
+      --acento: #FF8000;
+      --acento-claro: #FFA01A;
+      --acento-oscuro: #E66800;
+      --acento-texto: #FFFFFF;
+      --abierto: #5C6B3F;
+      --cerrado: #A13D3D;
+      --borde: #E4DACB;
+    }
+    [data-tema="oscuro"] {
+      --fondo: #121212;
+      --texto: #EFEFEF;
+      --acento: #FFA01A;
+      --acento-claro: #FFB84D;
+      --acento-oscuro: #FF8000;
+      --acento-texto: #121212;
+      --abierto: #93A76A;
+      --cerrado: #C97070;
+      --borde: #2E2E2E;
+    }
+    body {
+      font-family: 'Inter', Arial, sans-serif;
+      max-width: 700px;
+      margin: 40px auto;
+      padding: 0 20px;
+      background: var(--fondo);
+      color: var(--texto);
+      transition: background 0.2s, color 0.2s;
+    }
+    
+
+
+    input {
+      display: block;
+      margin-bottom: 10px;
+      padding: 10px;
+      width: 100%;
+      box-sizing: border-box;
+      font-size: 16px;
+      background: var(--fondo);
+      color: var(--texto);
+      border: 1px solid var(--borde);
+      border-radius: 4px;
+    }
+    #buscar {
+      max-width: 550px;
+      margin: 0 auto 15px auto;
+      padding: 14px 24px;
+      border-radius: 30px;
+      border: 1px solid var(--borde);
+      box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+      font-size: 17px;
+      text-align: left;
+    }
+    #buscar:focus {
+      outline: none;
+      box-shadow: 0 1px 8px rgba(0, 0, 0, 0.2);
+    }
+
+
+            button {
+      padding: 12px 26px;
+      cursor: pointer;
+      background: linear-gradient(180deg, var(--acento-claro), var(--acento-oscuro));
+      color: var(--acento-texto);
+      border: none;
+      border-radius: 4px;
+      font-weight: bold;
+      box-shadow: 0 1.5px 3px rgba(0, 0, 0, 0.25);
+      transform: scale(1);
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+    button:hover { opacity: 0.95; }
+    button:active {
+      transform: scale(0.97);
+      box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.35);
+    }
+    .estado-abierto { color: var(--abierto); font-weight: bold; }
+    .estado-cerrado { color: var(--cerrado); font-weight: bold; }
+    .resultado {
+      border: 1px solid var(--borde);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 10px;
+    }
+        .resultado h3 { margin: 0 0 5px 0; color: var(--acento); }
+        .resultado h3 a { color: var(--acento); text-decoration: none; }
+        .resultado h3 a:hover { color: var(--acento); }
+    .login-link { margin-top: 40px; text-align: center; }
+    .login-link a { color: var(--texto); font-size: 14px; cursor: pointer; }
+    
+    #error-login { color: var(--cerrado); }
+    .fila-password { display: flex; align-items: center; }
+    .fila-password input { flex: 1; margin-bottom: 0; }
+    .fila-password button { margin-left: 8px; width: 50px; }
+        .header-superior {
+      position: relative;
+      margin-bottom: 20px;
+    }
+    #boton-tema {
+      background: transparent;
+      color: var(--texto);
+      border: 1px solid var(--borde);
+      position: absolute;
+      top: 0;
+      right: 0;
+    }
+
+
+    .modal-fondo {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 100;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-fondo.activo { display: flex; }
+    .modal-caja {
+      background: var(--fondo);
+      color: var(--texto);
+      padding: 24px;
+      border-radius: 8px;
+      max-width: 350px;
+      width: 90%;
+      position: relative;
+    }
+    .modal-cerrar {
+      position: absolute;
+      top: 8px;
+      right: 12px;
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: var(--texto);
+      padding: 0;
+    }
+  </style>
+</head>
+<body>
+
+      <div class="header-superior">
+    <button type="button" onclick="mostrarLogin()" style="background: transparent; color: var(--texto); border: 1px solid var(--borde); position: absolute; top: 0; left: 0; font-size: 13px; padding: 8px 12px;">🍽️ Restaurantes</button>
+    <button id="boton-tema" onclick="cambiarTema()">🌙 Modo oscuro</button>
+    <img src="logo.png" alt="GoFood" style="display: block; margin: 0 auto; max-height: 250px;">
+  </div>
+
+
+
+  <input type="text" id="buscar" placeholder="Buscá por nombre o tipo de comida..." onkeypress="if(event.key === 'Enter') buscar()">
+    <div style="text-align: center;">
+    <button onclick="buscar()">Buscar</button>
+  </div>
+
+
+
+<div id="filtros" style="display: none;">
+  <label style="display: inline-block; margin-top: 10px; font-weight: normal;">
+    <input type="checkbox" id="solo-abiertos" checked onchange="buscar()" style="display: inline-block; width: auto; margin-right: 6px;">
+    Solo abiertos
+  </label>
+
+  <select id="orden-precio" onchange="buscar()" style="width: auto; display: inline-block; margin-left: 10px; padding: 8px;">
+    <option value="">Ordenar platos por precio</option>
+    <option value="asc">Precio: menor a mayor</option>
+    <option value="desc">Precio: mayor a menor</option>
+  </select>
+
+<button type="button" id="boton-cercania" onclick="activarCercania()" style="margin-left: 10px;">📍 Ordenar por cercanía</button>
+</div>
+
+
+
+  <div id="resultados"></div>
+    <div id="seccion-abiertos">
+    <h2 id="titulo-abiertos">Restaurantes abiertos ahora</h2>
+    <div id="lista-abiertos">Cargando...</div>
+  </div>
+
+    <div id="login-restaurante" class="modal-fondo">
+    <div class="modal-caja">
+      <button type="button" class="modal-cerrar" onclick="mostrarLogin()">✕</button>
+      <h3>Iniciar sesión - Restaurantes</h3>
+      <input type="email" id="login-email" placeholder="Email" onkeypress="if(event.key === 'Enter') loginRestaurante()">
+      <div class="fila-password">
+        <input type="password" id="login-password" placeholder="Contraseña" onkeypress="if(event.key === 'Enter') loginRestaurante()">
+        <button type="button" onclick="mostrarOcultarPassword()">👁</button>
+      </div>
+      <button onclick="loginRestaurante()">Entrar</button>
+      <p id="error-login"></p>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = "https://gofood-api-production.up.railway.app";
+
+    async function cargarAbiertos() {
+      try {
+        const response = await fetch(`${API_URL}/api/restaurants?openOnly=true`);
+        const restaurantes = await response.json();
+
+        const listaEl = document.getElementById("lista-abiertos");
+
+        if (restaurantes.length === 0) {
+          listaEl.innerHTML = "<p>No hay restaurantes abiertos en este momento.</p>";
+          return;
+        }
+
+        listaEl.innerHTML = restaurantes.map(r => `
+          <div class="resultado">
+            <h3><a href="restaurante.html?id=${r.id}">${r.name}</a></h3>
+            <p>${r.address} — <span class="estado-abierto">Abierto</span></p>
+          </div>
+        `).join("");
+      } catch (err) {
+        document.getElementById("lista-abiertos").innerHTML = "<p>No se pudo conectar con la API.</p>";
+      }
+    }
+
+
+
+
+
+
+    let ubicacionUsuario = null;
+
+    function activarCercania() {
+      const boton = document.getElementById("boton-cercania");
+
+      if (!navigator.geolocation) {
+        alert("Tu navegador no soporta geolocalización.");
+        return;
+      }
+
+      boton.textContent = "📍 Obteniendo ubicación...";
+      boton.disabled = true;
+
+      navigator.geolocation.getCurrentPosition(
+        (posicion) => {
+          ubicacionUsuario = {
+            lat: posicion.coords.latitude,
+            lng: posicion.coords.longitude
+          };
+          boton.textContent = "📍 Ordenado por cercanía ✓";
+          boton.disabled = false;
+          buscar();
+        },
+        (error) => {
+          alert("No se pudo obtener tu ubicación. Revisá los permisos del navegador.");
+          boton.textContent = "📍 Ordenar por cercanía";
+          boton.disabled = false;
+        }
+      );
+    }
+
+
+
+
+
+
+            async function buscar() {
+      const q = document.getElementById("buscar").value;
+      const resultadosEl = document.getElementById("resultados");
+      resultadosEl.innerHTML = "";
+
+      sessionStorage.setItem("busqueda-q", q);
+      sessionStorage.setItem("busqueda-abiertos", document.getElementById("solo-abiertos").checked);
+      sessionStorage.setItem("busqueda-precio", document.getElementById("orden-precio").value);
+
+      if (!q) {
+
+
+        document.getElementById("filtros").style.display = "none";
+        document.getElementById("seccion-abiertos").style.display = "block";
+        return;
+      }
+
+      document.getElementById("filtros").style.display = "block";
+      document.getElementById("seccion-abiertos").style.display = "none";
+
+      const soloAbiertos = document.getElementById("solo-abiertos").checked;
+      const sortPrice = document.getElementById("orden-precio").value;
+            let url = `${API_URL}/api/search?q=${encodeURIComponent(q)}&openOnly=${soloAbiertos}&sortPrice=${sortPrice}`;
+      if (ubicacionUsuario) {
+        url += `&userLat=${ubicacionUsuario.lat}&userLng=${ubicacionUsuario.lng}`;
+      }
+      const response = await fetch(url);
+      const data = await response.json();
+
+      if (data.restaurants.length === 0 && data.menuItems.length === 0) {
+        resultadosEl.innerHTML = "<p>No se encontraron resultados.</p>";
+        return;
+      }
+
+      data.restaurants.forEach(r => {
+        resultadosEl.innerHTML += `
+          <div class="resultado">
+            <h3><a href="restaurante.html?id=${r.id}">${r.name}</a></h3>
+            <p>${r.address} — ${r.isOpen ? "<span class='estado-abierto'>Abierto</span>" : "<span class='estado-cerrado'>Cerrado</span>"}</p>
+          </div>
+        `;
+      });
+
+                        data.menuItems.forEach(m => {
+        if (sortPrice) {
+          resultadosEl.innerHTML += `
+            <div class="resultado">
+              <h3><a href="restaurante.html?id=${m.restaurantId}">${m.name} - $${m.price}</a></h3>
+              <p>${m.description ?? ""}</p>
+                            <p><em style="color: var(--acento);">En: ${m.restaurantName}</em></p>
+            </div>
+          `;
+        } else {
+          resultadosEl.innerHTML += `
+            <div class="resultado">
+              <h3>${m.restaurantName}</h3>
+              <p>${m.description ?? ""}</p>
+              <p><a href="restaurante.html?id=${m.restaurantId}">${m.name} - $${m.price}</a></p>
+            </div>
+          `;
+        }
+      });
+    }
+
+        function mostrarLogin() {
+      document.getElementById("login-restaurante").classList.toggle("activo");
+    }
+
+    function mostrarOcultarPassword() {
+      const campo = document.getElementById("login-password");
+      campo.type = campo.type === "password" ? "text" : "password";
+    }
+
+    async function loginRestaurante() {
+      const email = document.getElementById("login-email").value;
+      const password = document.getElementById("login-password").value;
+      const errorEl = document.getElementById("error-login");
+      errorEl.textContent = "";
+
+      try {
+        const response = await fetch(`${API_URL}/api/auth/login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password })
+        });
+
+        if (!response.ok) {
+          errorEl.textContent = "Email o contraseña incorrectos";
+          return;
+        }
+
+        const data = await response.json();
+        sessionStorage.setItem("token", data.token);
+        window.location.href = "panel-restaurante.html";
+      } catch (err) {
+        errorEl.textContent = "No se pudo conectar con la API.";
+      }
+    }
+
+    function aplicarTema(tema) {
+      document.documentElement.setAttribute("data-tema", tema);
+      document.getElementById("boton-tema").textContent = tema === "oscuro" ? "☀️ Modo claro" : "🌙 Modo oscuro";
+      localStorage.setItem("tema", tema);
+    }
+
+    function cambiarTema() {
+      const temaActual = document.documentElement.getAttribute("data-tema");
+      aplicarTema(temaActual === "oscuro" ? "claro" : "oscuro");
+    }
+
+    aplicarTema(localStorage.getItem("tema") || "claro");
+
+        function restaurarBusqueda() {
+      const qGuardado = sessionStorage.getItem("busqueda-q");
+      if (!qGuardado) return;
+
+      document.getElementById("buscar").value = qGuardado;
+      document.getElementById("filtros").style.display = "block";
+      document.getElementById("seccion-abiertos").style.display = "none";
+      document.getElementById("solo-abiertos").checked = sessionStorage.getItem("busqueda-abiertos") === "true";
+      document.getElementById("orden-precio").value = sessionStorage.getItem("busqueda-precio") || "";
+      buscar();
+    }
+
+    cargarAbiertos();
+    setInterval(cargarAbiertos, 30000);
+    restaurarBusqueda();
+  </script>
+
+</body>
+</html>
