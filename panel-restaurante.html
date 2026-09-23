@@ -112,19 +112,6 @@
   <div id="contenido">Cargando...</div>
   <p id="error-carga"></p>
 
-  <div id="form-editar">
-    <h3>Editar perfil</h3>
-    <input type="text" id="editar-nombre" placeholder="Nombre del restaurante">
-    <input type="text" id="editar-descripcion" placeholder="Descripción (opcional)">
-    <input type="text" id="editar-direccion" placeholder="Dirección">
-        <input type="text" id="editar-telefono" placeholder="Teléfono con código de país (ej: 58 4141234567)" onkeypress="return /[0-9\s-]/.test(event.key)">
-    <input type="text" id="editar-coords" placeholder="Coordenadas (7.759796, -72.214559)">
-    <input type="text" id="editar-social" placeholder="Link de redes sociales (opcional)">
-    <button id="boton-guardar-perfil" onclick="guardarPerfil()">Guardar cambios</button>
-    <button type="button" onclick="cancelarEdicionPerfil()">Cancelar</button>
-    <p id="error-perfil"></p>
-    <p id="exito-perfil"></p>
-  </div>
 
   <div id="seccion-fotos">
   <h3>Fotos del menú</h3>
@@ -151,6 +138,20 @@
   <button type="button" onclick="cancelarFormPlato()">Cancelar</button>
   <p id="error-plato"></p>
   <p id="exito-plato"></p>
+  </div>
+
+<div id="form-editar">
+    <h3>Editar perfil</h3>
+    <input type="text" id="editar-nombre" placeholder="Nombre del restaurante">
+    <input type="text" id="editar-descripcion" placeholder="Descripción (opcional)">
+    <input type="text" id="editar-direccion" placeholder="Dirección">
+        <input type="text" id="editar-telefono" placeholder="Teléfono con código de país (ej: 58 4141234567)" onkeypress="return /[0-9\s-]/.test(event.key)">
+    <input type="text" id="editar-coords" placeholder="Coordenadas (7.759796, -72.214559)">
+    <input type="text" id="editar-social" placeholder="Link de redes sociales (opcional)">
+    <button id="boton-guardar-perfil" onclick="guardarPerfil()">Guardar cambios</button>
+    <button type="button" onclick="cancelarEdicionPerfil()">Cancelar</button>
+    <p id="error-perfil"></p>
+    <p id="exito-perfil"></p>
   </div>
 
   <script>
