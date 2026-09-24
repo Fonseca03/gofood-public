@@ -47,24 +47,48 @@
     }
     .estado-abierto { color: var(--abierto); font-weight: bold; }
     .estado-cerrado { color: var(--cerrado); font-weight: bold; }
-        .boton-llegar {
-      display: inline-block;
+        
+    .boton-llegar {
+      display: block;
+      width: fit-content;
       background: linear-gradient(180deg, var(--acento-claro), var(--acento-oscuro));
       color: var(--acento-texto);
-      padding: 14px 28px;
-      font-size: 16px;
+      padding: 10px 20px;
+      font-size: 14px;
       border-radius: 6px;
       text-decoration: none;
-      margin-top: 10px;
+      margin-top: 8px;
       font-weight: bold;
       box-shadow: 0 1.5px 3px rgba(0, 0, 0, 0.25);
       transform: scale(1);
       transition: transform 0.1s, box-shadow 0.1s;
     }
+    
     .boton-llegar:hover { opacity: 0.95; }
     .boton-llegar:active {
       transform: scale(0.97);
       box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.35);
+    }
+    
+
+    .boton-redes {
+      display: block;
+      width: fit-content;
+      background: transparent;
+      border: 2px solid var(--acento);
+      color: var(--acento);
+      padding: 8px 18px;
+      font-size: 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-top: 8px;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .boton-redes:hover {
+      background: var(--acento);
+      color: var(--acento-texto);
     }
     
 
@@ -94,6 +118,7 @@
       display: none;
     }
 
+    
     .banner-titulo {
       position: absolute;
       bottom: 50px;
@@ -102,7 +127,12 @@
       text-align: center;
       margin: 0;
       color: var(--texto);
+      font-size: 32px;
+      font-weight: 800;
+      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
     }
+
+
     #boton-tema {
       background: rgba(255, 255, 255, 0.85);
       color: var(--texto);
@@ -207,8 +237,22 @@
 
         html += `<p><strong>Estado:</strong> <span class="${claseEstado}">${textoEstado}</span></p>`;
 
-        if (r.socialMediaLink) {
-          html += `<p><strong>Redes:</strong> <a href="${r.socialMediaLink}" target="_blank">${r.socialMediaLink}</a></p>`;
+                const tieneRedes = r.tikTokLink || r.instagramLink || r.facebookLink;
+        if (tieneRedes) {
+
+          html += `<button type="button" class="boton-redes" onclick="mostrarRedes()">Redes sociales</button>`;
+
+          html += `<div id="redes-sociales" style="display: none; margin-top: 10px;">`;
+          if (r.tikTokLink) {
+            html += `<p><strong>TikTok:</strong> <a href="${r.tikTokLink}" target="_blank">${r.tikTokLink}</a></p>`;
+          }
+          if (r.instagramLink) {
+            html += `<p><strong>Instagram:</strong> <a href="${r.instagramLink}" target="_blank">${r.instagramLink}</a></p>`;
+          }
+          if (r.facebookLink) {
+            html += `<p><strong>Facebook:</strong> <a href="${r.facebookLink}" target="_blank">${r.facebookLink}</a></p>`;
+          }
+          html += `</div>`;
         }
 
         // Validación de Coordenadas para el botón "Cómo llegar"
@@ -239,6 +283,11 @@
       } catch (err) {
         document.getElementById("contenido").innerHTML = "<p>No se pudo conectar con la API.</p>";
       }
+    }
+
+        function mostrarRedes() {
+      const div = document.getElementById("redes-sociales");
+      div.style.display = div.style.display === "none" ? "block" : "none";
     }
 
     function aplicarTema(tema) {

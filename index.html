@@ -233,7 +233,7 @@
         
         listaEl.innerHTML = restaurantes.map(r => `
           <div class="resultado">
-            <h3>${r.logoUrl ? `<img class="logo-mini" src="${r.logoUrl}">` : ""}<a href="restaurante.html?id=${r.id}">${r.name}</a></h3>
+                        <h3><a href="restaurante.html?id=${r.id}">${r.logoUrl ? `<img class="logo-mini" src="${r.logoUrl}">` : ""}${r.name}</a></h3>
             <p>${r.address} — <span class="estado-abierto">Abierto</span></p>
           </div>
         `).join("");
@@ -323,7 +323,7 @@
       data.restaurants.forEach(r => {
         resultadosEl.innerHTML += `
           <div class="resultado">
-            <h3>${r.logoUrl ? `<img class="logo-mini" src="${r.logoUrl}">` : ""}<a href="restaurante.html?id=${r.id}">${r.name}</a></h3>
+            <h3><a href="restaurante.html?id=${r.id}">${r.logoUrl ? `<img class="logo-mini" src="${r.logoUrl}">` : ""}${r.name}</a></h3>
             <p>${r.address} — ${r.isOpen ? "<span class='estado-abierto'>Abierto</span>" : "<span class='estado-cerrado'>Cerrado</span>"}</p>
           </div>
         `;

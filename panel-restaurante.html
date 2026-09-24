@@ -148,15 +148,16 @@
     <img id="banner-imagen" class="banner-fondo" src="" alt="">
     <button id="boton-cerrar-sesion" onclick="cerrarSesion()">Cerrar sesión</button>
     <button id="boton-tema" onclick="cambiarTema()">🌙 Modo oscuro</button>
-    <img id="banner-avatar" class="banner-avatar" src="" alt="Logo">
-    <h1 class="banner-titulo">Mi Restaurante</h1>
+        <img id="banner-avatar" class="banner-avatar" src="" alt="Logo">
   </div>
 
   <div id="contenido">Cargando...</div>
   <p id="error-carga"></p>
 
-  <div id="seccion-logo">
-  <h3>Logo del negocio</h3>
+    <div id="seccion-logo">
+  <button type="button" onclick="mostrarLogo()">Logo del negocio</button>
+
+  <div id="contenido-logo" style="display: none;">
   <div id="logo-actual"></div>
 
   <input type="file" id="input-logo" accept="image/*" onchange="previsualizarLogo(event)">
@@ -165,6 +166,7 @@
 
   <p id="error-logo"></p>
   <p id="exito-logo"></p>
+  </div>
   </div>
 
   <div id="seccion-fotos">
@@ -182,7 +184,7 @@
   <button onclick="mostrarFormPlato()">Agregar plato</button>
   </div>
 
-  <div id="form-plato">
+      <div id="form-plato">
   <h3 id="titulo-form-plato">Nuevo plato</h3>
   <input type="hidden" id="plato-id" value="">
   <input type="text" id="plato-nombre" placeholder="Nombre del plato">
@@ -194,6 +196,8 @@
   <p id="exito-plato"></p>
   </div>
 
+
+
 <div id="form-editar">
     <h3>Editar perfil</h3>
     <input type="text" id="editar-nombre" placeholder="Nombre del restaurante">
@@ -202,7 +206,12 @@
     <input type="text" id="editar-telefono" placeholder="Teléfono con código de país (ej: 58 4141234567)" onkeypress="return /[0-9\s-]/.test(event.key)">
     <input type="text" id="editar-coords" placeholder="Coordenadas (7.759796, -72.214559)">
 
-    <input type="text" id="editar-social" placeholder="Link de redes sociales (opcional)">
+    
+    <input type="text" id="editar-tiktok" placeholder="Link de TikTok (opcional)">
+    <input type="text" id="editar-instagram" placeholder="Link de Instagram (opcional)">
+    <input type="text" id="editar-facebook" placeholder="Link de Facebook (opcional)">
+
+
 
     <select id="editar-categoria">
       <option value="Bodegas y Minimarkets">Bodegas y Minimarkets</option>
@@ -269,7 +278,11 @@
         <div class="campo"><strong>Descripción:</strong> ${r.description ?? "-"}</div>
         <div class="campo"><strong>Dirección:</strong> ${r.address ?? "-"}</div>
         <div class="campo"><strong>Teléfono:</strong> ${r.phone ?? "-"}</div>
-        <div class="campo"><strong>Redes sociales:</strong> ${r.socialMediaLink ?? "-"}</div>
+        <div class="campo"><strong>TikTok:</strong> ${r.tikTokLink ?? "-"}</div>
+        <div class="campo"><strong>Instagram:</strong> ${r.instagramLink ?? "-"}</div>
+        <div class="campo"><strong>Facebook:</strong> ${r.facebookLink ?? "-"}</div>
+
+
         <div class="campo"><strong>Estado:</strong> <span class="${claseEstado}">${textoEstado}</span></div>
         <button onclick="cambiarEstado()">Cambiar a ${r.isOpen ? "Cerrado" : "Abierto"}</button>
         <button onclick="mostrarEdicionPerfil()">Editar perfil</button>
@@ -334,7 +347,9 @@
       `).join("");
     }
 
-    function mostrarFormPlato(plato) {
+    
+
+        function mostrarFormPlato(plato) {
       document.getElementById("error-plato").textContent = "";
       document.getElementById("exito-plato").textContent = "";
 
@@ -355,10 +370,14 @@
       document.getElementById("form-plato").style.display = "block";
       window.scrollTo(0, document.body.scrollHeight);
     }
+       
+
 
     function cancelarFormPlato() {
       document.getElementById("form-plato").style.display = "none";
     }
+    
+       
 
     async function guardarPlato() {
       const errorEl = document.getElementById("error-plato");
@@ -416,6 +435,7 @@
         errorEl.textContent = "No se pudo conectar con la API.";
       }
     }
+
 
     async function eliminarPlato(id) {
       const confirmar = confirm("¿Seguro que querés eliminar este plato?");
@@ -542,6 +562,7 @@
           return;
         }
 
+        
         const data = await response.json();
         miRestaurante.logoUrl = data.url;
         renderizarLogo();
@@ -552,7 +573,15 @@
       }
     }
 
+    function mostrarLogo() {
+      const div = document.getElementById("contenido-logo");
+      div.style.display = div.style.display === "none" ? "block" : "none";
+    }
+
     async function cambiarEstado() {
+
+
+
       const nuevoEstado = !miRestaurante.isOpen;
 
       try {
@@ -585,7 +614,12 @@
       document.getElementById("editar-direccion").value = r.address ?? "";
       document.getElementById("editar-telefono").value = r.phone ?? "";
       document.getElementById("editar-coords").value = `${r.latitude}, ${r.longitude}`;
-      document.getElementById("editar-social").value = r.socialMediaLink ?? "";
+      
+      document.getElementById("editar-tiktok").value = r.tikTokLink ?? "";
+      document.getElementById("editar-instagram").value = r.instagramLink ?? "";
+      document.getElementById("editar-facebook").value = r.facebookLink ?? "";
+
+
       document.getElementById("editar-categoria").value = r.category || "Comida";
 
       document.getElementById("error-perfil").textContent = "";
@@ -627,7 +661,9 @@
         phone: telefonoIngresado,
         latitude: partes[0],
         longitude: partes[1],
-        socialMediaLink: document.getElementById("editar-social").value || null,
+                tikTokLink: document.getElementById("editar-tiktok").value || null,
+        instagramLink: document.getElementById("editar-instagram").value || null,
+        facebookLink: document.getElementById("editar-facebook").value || null,
         category: document.getElementById("editar-categoria").value
       };
 
