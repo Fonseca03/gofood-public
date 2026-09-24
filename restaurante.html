@@ -66,31 +66,92 @@
       transform: scale(0.97);
       box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.35);
     }
-    .header-superior {
+    
+
+
+    #banner-portada {
       position: relative;
-      margin-bottom: 20px;
+      left: 50%;
+      width: 100vw;
+      margin-left: -50vw;
+      height: 320px;
+      overflow: hidden;
+      background: var(--fondo);
+      margin-bottom: 60px;
+    }
+    
+
+    .banner-fondo {
+      max-width: none;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      border-radius: 0;
+      object-fit: cover;
+      object-position: center;
+      filter: blur(4px);
+      opacity: 0.15;
+      display: none;
+    }
+
+    .banner-titulo {
+      position: absolute;
+      bottom: 50px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      margin: 0;
+      color: var(--texto);
     }
     #boton-tema {
-      background: transparent;
+      background: rgba(255, 255, 255, 0.85);
       color: var(--texto);
       border: 1px solid var(--borde);
       padding: 8px 16px;
       border-radius: 4px;
       cursor: pointer;
       position: absolute;
-      top: 0;
-      right: 0;
+      top: 10px;
+      right: 10px;
     }
+    
+    .banner-avatar {
+      position: absolute;
+      bottom: -40px;
+      left: 50%;
+      transform: translateX(-50%);
+      max-width: none;
+      width: 90px;
+      height: 90px;
+      margin: 0;
+      border-radius: 50%;
+      border: 4px solid var(--fondo);
+      object-fit: cover;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+      display: none;
+    }
+
+
+
   </style>
+
+
+
 </head>
 <body>
 
-  <div class="header-superior">
+
+  <div id="banner-portada">
+    <img id="banner-imagen" class="banner-fondo" src="" alt="">
     <button id="boton-tema" onclick="cambiarTema()">🌙 Modo oscuro</button>
-    <img src="logo.png" alt="GoFood" style="display: block; margin: 0 auto; max-height: 200px;">
+    <img id="banner-avatar" class="banner-avatar" src="" alt="Logo">
+    <h1 id="banner-titulo" class="banner-titulo"></h1>
   </div>
 
   <a class="volver" href="index.html">← Volver a la búsqueda</a>
+
+
+
   <div id="contenido">Cargando...</div>
 
   <script>
@@ -114,13 +175,23 @@
           return;
         }
 
+        
         const r = await response.json();
         const claseEstado = r.isOpen ? "estado-abierto" : "estado-cerrado";
         const textoEstado = r.isOpen ? "Abierto" : "Cerrado";
 
-        let html = `<h1>${r.name}</h1>`;
-        html += `<p>${r.description ?? "Sin descripción"}</p>`;
-        
+        document.getElementById("banner-titulo").textContent = r.name;
+        if (r.logoUrl) {
+          document.getElementById("banner-imagen").src = r.logoUrl;
+          document.getElementById("banner-imagen").style.display = "block";
+          document.getElementById("banner-avatar").src = r.logoUrl;
+          document.getElementById("banner-avatar").style.display = "block";
+        }
+
+        let html = `<p>${r.description ?? "Sin descripción"}</p>`;
+
+
+
         // Validación de Dirección
         const direccionTexto = r.address && r.address.trim() !== "" ? r.address : "No especificada";
         html += `<p><strong>Dirección:</strong> ${direccionTexto}</p>`;
