@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <title>Panel del Restaurante</title>
   <style>
-      :root {
+    :root {
       --fondo: #FAF6EF;
       --texto: #2A2420;
       --acento: #FF8000;
       --acento-claro: #FFA01A;
       --acento-oscuro: #E66800;
       --acento-texto: #FFFFFF;
-      --abierto: #5C6B3F;
+      --abierto: #96E600;
       --cerrado: #A13D3D;
       --borde: #E4DACB;
     }
@@ -22,31 +22,31 @@
       --acento-claro: #FFB84D;
       --acento-oscuro: #FF8000;
       --acento-texto: #121212;
-      --abierto: #93A76A;
+      --abierto: #96E600;
       --cerrado: #C97070;
       --borde: #2E2E2E;
     }
-  body {
-    font-family: 'Inter', Arial, sans-serif;
-    max-width: 700px;
-    margin: 40px auto;
-    padding: 0 20px;
-    background: var(--fondo);
-    color: var(--texto);
-    transition: background 0.2s, color 0.2s;
-  }
-  input {
-    display: block;
-    margin-bottom: 10px;
-    padding: 8px;
-    width: 100%;
-    box-sizing: border-box;
-    background: var(--fondo);
-    color: var(--texto);
-    border: 1px solid var(--borde);
-    border-radius: 4px;
-  }
-      button {
+    body {
+      font-family: 'Inter', Arial, sans-serif;
+      max-width: 700px;
+      margin: 0 auto 40px;
+      padding: 0 20px;
+      background: var(--fondo);
+      color: var(--texto);
+      transition: background 0.2s, color 0.2s;
+    }
+    input {
+      display: block;
+      margin-bottom: 10px;
+      padding: 8px;
+      width: 100%;
+      box-sizing: border-box;
+      background: var(--fondo);
+      color: var(--texto);
+      border: 1px solid var(--borde);
+      border-radius: 4px;
+    }
+    button {
       padding: 14px 28px;
       font-size: 16px;
       cursor: pointer;
@@ -64,54 +64,108 @@
       transform: scale(0.97);
       box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.35);
     }
-  .estado-abierto { color: var(--abierto); font-weight: bold; }
-  .estado-cerrado { color: var(--cerrado); font-weight: bold; }
-  .campo { margin-bottom: 8px; }
-  .campo strong { display: inline-block; width: 140px; }
-  #error-carga, #error-perfil, #error-foto, #error-plato { color: var(--cerrado); }
-  #exito-perfil, #exito-foto, #exito-plato { color: var(--abierto); }
-  #form-editar, #form-plato {
-    display: none;
-    border-top: 1px solid var(--borde);
-    margin-top: 20px;
-    padding-top: 20px;
-  }
-  .foto-menu { max-width: 150px; margin: 5px; border-radius: 8px; }
-  .plato-item {
-    border: 1px solid var(--borde);
-    border-radius: 8px;
-    padding: 10px;
-    margin-bottom: 8px;
-  }
-      .header-superior {
+    .estado-abierto { color: var(--abierto); font-weight: bold; }
+    .estado-cerrado { color: var(--cerrado); font-weight: bold; }
+    .campo { margin-bottom: 8px; }
+    .campo strong { display: inline-block; width: 140px; }
+    #error-carga, #error-perfil, #error-foto, #error-plato { color: var(--cerrado); }
+    #exito-perfil, #exito-foto, #exito-plato { color: var(--abierto); }
+    #form-editar, #form-plato {
+      display: none;
+      border-top: 1px solid var(--borde);
+      margin-top: 20px;
+      padding-top: 20px;
+    }
+    .foto-menu { max-width: 150px; margin: 5px; border-radius: 8px; }
+    .plato-item {
+      border: 1px solid var(--borde);
+      border-radius: 8px;
+      padding: 10px;
+      margin-bottom: 8px;
+    }
+    #banner-portada {
       position: relative;
-      margin-bottom: 20px;
+      left: 50%;
+      width: 100vw;
+      margin-left: -50vw;
+      height: 320px;
+      overflow: hidden;
+      background: var(--fondo);
+      margin-bottom: 60px;
+    }
+    .banner-fondo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      filter: blur(4px);
+      opacity: 0.15;
+      display: none;
+    }
+    .banner-titulo {
+      position: absolute;
+      bottom: 50px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      margin: 0;
+      color: var(--texto);
     }
     #boton-tema {
-      background: transparent;
+      background: rgba(255, 255, 255, 0.85);
       color: var(--texto);
       border: 1px solid var(--borde);
       position: absolute;
-      top: 0;
-      right: 0;
+      top: 10px;
+      right: 10px;
     }
-</style>
+    #boton-cerrar-sesion {
+      background: rgba(255, 255, 255, 0.85);
+      color: var(--texto);
+      border: 1px solid var(--borde);
+      position: absolute;
+      top: 10px;
+      left: 10px;
+    }
+    .banner-avatar {
+      position: absolute;
+      bottom: -40px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      border: 4px solid var(--fondo);
+      object-fit: cover;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+      display: none;
+    }
+  </style>
 </head>
 <body>
 
-    <div class="header-superior">
+  <div id="banner-portada">
+    <img id="banner-imagen" class="banner-fondo" src="" alt="">
+    <button id="boton-cerrar-sesion" onclick="cerrarSesion()">Cerrar sesión</button>
     <button id="boton-tema" onclick="cambiarTema()">🌙 Modo oscuro</button>
-    <img src="logo.png" alt="GoFood" style="display: block; margin: 0 auto; max-height: 180px;">
-  </div>
-
-  <h1 style="text-align: center;">Mi Restaurante</h1>
-  <div style="text-align: center; margin-bottom: 20px;">
-    <button onclick="cerrarSesion()">Cerrar sesión</button>
+    <img id="banner-avatar" class="banner-avatar" src="" alt="Logo">
+    <h1 class="banner-titulo">Mi Restaurante</h1>
   </div>
 
   <div id="contenido">Cargando...</div>
   <p id="error-carga"></p>
 
+  <div id="seccion-logo">
+  <h3>Logo del negocio</h3>
+  <div id="logo-actual"></div>
+
+  <input type="file" id="input-logo" accept="image/*" onchange="previsualizarLogo(event)">
+  <img id="logo-preview" class="foto-menu" style="display: none;">
+  <button onclick="subirLogo()">Subir logo</button>
+
+  <p id="error-logo"></p>
+  <p id="exito-logo"></p>
+  </div>
 
   <div id="seccion-fotos">
   <h3>Fotos del menú</h3>
@@ -145,10 +199,32 @@
     <input type="text" id="editar-nombre" placeholder="Nombre del restaurante">
     <input type="text" id="editar-descripcion" placeholder="Descripción (opcional)">
     <input type="text" id="editar-direccion" placeholder="Dirección">
-        <input type="text" id="editar-telefono" placeholder="Teléfono con código de país (ej: 58 4141234567)" onkeypress="return /[0-9\s-]/.test(event.key)">
+    <input type="text" id="editar-telefono" placeholder="Teléfono con código de país (ej: 58 4141234567)" onkeypress="return /[0-9\s-]/.test(event.key)">
     <input type="text" id="editar-coords" placeholder="Coordenadas (7.759796, -72.214559)">
+
     <input type="text" id="editar-social" placeholder="Link de redes sociales (opcional)">
+
+    <select id="editar-categoria">
+      <option value="Bodegas y Minimarkets">Bodegas y Minimarkets</option>
+      <option value="Caucheras">Caucheras</option>
+      <option value="Clínicas">Clínicas</option>
+      <option value="Comida">Comida</option>
+      <option value="Entretenimiento">Entretenimiento</option>
+      <option value="Estaciones de Servicio">Estaciones de Servicio</option>
+      <option value="Farmacias">Farmacias</option>
+      <option value="Hospitales">Hospitales</option>
+      <option value="Licorerías">Licorerías</option>
+      <option value="Repuestos de Carro">Repuestos de Carro</option>
+      <option value="Repuestos de Moto">Repuestos de Moto</option>
+      <option value="Repuestos Línea Pesada">Repuestos Línea Pesada</option>
+      <option value="Supermercados">Supermercados</option>
+      <option value="Talleres Mecánicos de Carro">Talleres Mecánicos de Carro</option>
+      <option value="Talleres Mecánicos de Moto">Talleres Mecánicos de Moto</option>
+      <option value="Veterinarias">Veterinarias</option>
+    </select>
+
     <button id="boton-guardar-perfil" onclick="guardarPerfil()">Guardar cambios</button>
+
     <button type="button" onclick="cancelarEdicionPerfil()">Cancelar</button>
     <p id="error-perfil"></p>
     <p id="exito-perfil"></p>
@@ -171,7 +247,6 @@
         });
 
         if (!response.ok) {
-          // Si el token quedó viejo o inválido, lo mandamos de nuevo al login
           sessionStorage.removeItem("token");
           window.location.href = "index.html";
           return;
@@ -197,13 +272,33 @@
         <div class="campo"><strong>Redes sociales:</strong> ${r.socialMediaLink ?? "-"}</div>
         <div class="campo"><strong>Estado:</strong> <span class="${claseEstado}">${textoEstado}</span></div>
         <button onclick="cambiarEstado()">Cambiar a ${r.isOpen ? "Cerrado" : "Abierto"}</button>
-                <button onclick="mostrarEdicionPerfil()">Editar perfil</button>
+        <button onclick="mostrarEdicionPerfil()">Editar perfil</button>
       `;
+
+      renderizarLogo();
       renderizarFotos();
       renderizarPlatos();
     }
 
-        function renderizarFotos() {
+    function renderizarLogo() {
+      const contenedor = document.getElementById("logo-actual");
+      const bannerImg = document.getElementById("banner-imagen");
+      const avatarImg = document.getElementById("banner-avatar");
+
+      if (miRestaurante.logoUrl) {
+        contenedor.innerHTML = `<img class="foto-menu" src="${miRestaurante.logoUrl}">`;
+        bannerImg.src = miRestaurante.logoUrl;
+        bannerImg.style.display = "block";
+        avatarImg.src = miRestaurante.logoUrl;
+        avatarImg.style.display = "block";
+      } else {
+        contenedor.innerHTML = "<p>No hay logo cargado todavía.</p>";
+        bannerImg.style.display = "none";
+        avatarImg.style.display = "none";
+      }
+    }
+
+    function renderizarFotos() {
       const galeria = document.getElementById("galeria-fotos");
       const fotos = miRestaurante.menuPhotos || [];
 
@@ -366,8 +461,6 @@
       }
     }
 
-
-
     async function subirFoto() {
       const errorEl = document.getElementById("error-foto");
       const exitoEl = document.getElementById("exito-foto");
@@ -407,7 +500,56 @@
       } catch (err) {
         errorEl.textContent = "No se pudo conectar con la API.";
       }
-    
+    }
+
+    function previsualizarLogo(event) {
+      const archivo = event.target.files[0];
+      const preview = document.getElementById("logo-preview");
+      if (archivo) {
+        preview.src = URL.createObjectURL(archivo);
+        preview.style.display = "inline-block";
+      } else {
+        preview.style.display = "none";
+      }
+    }
+
+    async function subirLogo() {
+      const errorEl = document.getElementById("error-logo");
+      const exitoEl = document.getElementById("exito-logo");
+      errorEl.textContent = "";
+      exitoEl.textContent = "";
+
+      const inputLogo = document.getElementById("input-logo");
+      const archivo = inputLogo.files[0];
+
+      if (!archivo) {
+        errorEl.textContent = "Elegí una imagen primero.";
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("file", archivo);
+
+      try {
+        const response = await fetch(`${API_URL}/api/restaurants/me/logo`, {
+          method: "POST",
+          headers: { "Authorization": `Bearer ${token}` },
+          body: formData
+        });
+
+        if (!response.ok) {
+          errorEl.textContent = "No se pudo subir el logo.";
+          return;
+        }
+
+        const data = await response.json();
+        miRestaurante.logoUrl = data.url;
+        renderizarLogo();
+        inputLogo.value = "";
+        exitoEl.textContent = "Logo actualizado con éxito.";
+      } catch (err) {
+        errorEl.textContent = "No se pudo conectar con la API.";
+      }
     }
 
     async function cambiarEstado() {
@@ -444,6 +586,7 @@
       document.getElementById("editar-telefono").value = r.phone ?? "";
       document.getElementById("editar-coords").value = `${r.latitude}, ${r.longitude}`;
       document.getElementById("editar-social").value = r.socialMediaLink ?? "";
+      document.getElementById("editar-categoria").value = r.category || "Comida";
 
       document.getElementById("error-perfil").textContent = "";
       document.getElementById("exito-perfil").textContent = "";
@@ -484,7 +627,8 @@
         phone: telefonoIngresado,
         latitude: partes[0],
         longitude: partes[1],
-        socialMediaLink: document.getElementById("editar-social").value || null
+        socialMediaLink: document.getElementById("editar-social").value || null,
+        category: document.getElementById("editar-categoria").value
       };
 
       const botonEl = document.getElementById("boton-guardar-perfil");
@@ -506,7 +650,6 @@
           return;
         }
 
-        // Actualizamos los datos en memoria con lo que acabamos de guardar
         miRestaurante = { ...miRestaurante, ...body };
         renderizarPerfil();
         exitoEl.textContent = "Perfil actualizado con éxito.";

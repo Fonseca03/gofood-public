@@ -11,7 +11,7 @@
       --acento-claro: #FFA01A;
       --acento-oscuro: #E66800;
       --acento-texto: #FFFFFF;
-      --abierto: #5C6B3F;
+      --abierto: #96E600;
       --cerrado: #A13D3D;
       --borde: #E4DACB;
     }
@@ -22,7 +22,7 @@
       --acento-claro: #FFB84D;
       --acento-oscuro: #FF8000;
       --acento-texto: #121212;
-      --abierto: #93A76A;
+      --abierto: #96E600;
       --cerrado: #C97070;
       --borde: #2E2E2E;
     }
@@ -85,12 +85,25 @@
     }
     .estado-abierto { color: var(--abierto); font-weight: bold; }
     .estado-cerrado { color: var(--cerrado); font-weight: bold; }
+
+
     .resultado {
       border: 1px solid var(--borde);
       border-radius: 8px;
       padding: 12px;
       margin-bottom: 10px;
     }
+    .logo-mini {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+
+
+
         .resultado h3 { margin: 0 0 5px 0; color: var(--acento); }
         .resultado h3 a { color: var(--acento); text-decoration: none; }
         .resultado h3 a:hover { color: var(--acento); }
@@ -217,12 +230,15 @@
           return;
         }
 
+        
         listaEl.innerHTML = restaurantes.map(r => `
           <div class="resultado">
-            <h3><a href="restaurante.html?id=${r.id}">${r.name}</a></h3>
+            <h3>${r.logoUrl ? `<img class="logo-mini" src="${r.logoUrl}">` : ""}<a href="restaurante.html?id=${r.id}">${r.name}</a></h3>
             <p>${r.address} — <span class="estado-abierto">Abierto</span></p>
           </div>
         `).join("");
+
+
       } catch (err) {
         document.getElementById("lista-abiertos").innerHTML = "<p>No se pudo conectar con la API.</p>";
       }
@@ -303,14 +319,17 @@
         return;
       }
 
+      
       data.restaurants.forEach(r => {
         resultadosEl.innerHTML += `
           <div class="resultado">
-            <h3><a href="restaurante.html?id=${r.id}">${r.name}</a></h3>
+            <h3>${r.logoUrl ? `<img class="logo-mini" src="${r.logoUrl}">` : ""}<a href="restaurante.html?id=${r.id}">${r.name}</a></h3>
             <p>${r.address} — ${r.isOpen ? "<span class='estado-abierto'>Abierto</span>" : "<span class='estado-cerrado'>Cerrado</span>"}</p>
           </div>
         `;
       });
+
+
 
                         data.menuItems.forEach(m => {
         if (sortPrice) {
