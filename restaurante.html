@@ -133,16 +133,13 @@
     }
 
 
-    #boton-tema {
+        #boton-tema, #boton-idioma {
       background: rgba(255, 255, 255, 0.85);
       color: var(--texto);
       border: 1px solid var(--borde);
       padding: 8px 16px;
       border-radius: 4px;
       cursor: pointer;
-      position: absolute;
-      top: 10px;
-      right: 10px;
     }
     
     .banner-avatar {
@@ -171,29 +168,86 @@
 <body>
 
 
-  <div id="banner-portada">
+    <div id="banner-portada">
     <img id="banner-imagen" class="banner-fondo" src="" alt="">
-    <button id="boton-tema" onclick="cambiarTema()">🌙 Modo oscuro</button>
+    <div style="position: absolute; top: 10px; right: 10px; display: flex; gap: 8px;">
+      <button id="boton-idioma" onclick="cambiarIdioma()">🌐 English</button>
+      <button id="boton-tema" onclick="cambiarTema()">🌙 Modo oscuro</button>
+    </div>
     <img id="banner-avatar" class="banner-avatar" src="" alt="Logo">
     <h1 id="banner-titulo" class="banner-titulo"></h1>
   </div>
 
-  <a class="volver" href="index.html">← Volver a la búsqueda</a>
+  <a class="volver" id="link-volver" href="index.html">← Volver a la búsqueda</a>
 
 
 
   <div id="contenido">Cargando...</div>
 
-  <script>
+    <script>
     const API_URL = "https://gofood-api-production.up.railway.app";
+
+    const traducciones = {
+      es: {
+        linkVolver: "← Volver a la búsqueda",
+        temaOscuro: "🌙 Modo oscuro",
+        temaClaro: "☀️ Modo claro",
+        botonIdioma: "🌐 English",
+        sinId: "No se especificó un restaurante.",
+        noEncontrado: "No se encontró el restaurante.",
+        sinDescripcion: "Sin descripción",
+        direccion: "Dirección:",
+        direccionNoEspecificada: "No especificada",
+        whatsapp: "WhatsApp:",
+        whatsappNoEspecificado: "No especificado",
+        estado: "Estado:",
+        abierto: "Abierto",
+        cerrado: "Cerrado",
+        redesSociales: "Redes sociales",
+        comoLlegar: "📍 Cómo llegar",
+        fotosMenu: "Fotos del menú",
+        sinFotos: "No hay fotos cargadas.",
+        platos: "Platos",
+        sinPlatos: "No hay platos cargados.",
+        errorConexion: "No se pudo conectar con la API."
+      },
+      en: {
+        linkVolver: "← Back to search",
+        temaOscuro: "🌙 Dark mode",
+        temaClaro: "☀️ Light mode",
+        botonIdioma: "🌐 Español",
+        sinId: "No restaurant was specified.",
+        noEncontrado: "Restaurant not found.",
+        sinDescripcion: "No description",
+        direccion: "Address:",
+        direccionNoEspecificada: "Not specified",
+        whatsapp: "WhatsApp:",
+        whatsappNoEspecificado: "Not specified",
+        estado: "Status:",
+        abierto: "Open",
+        cerrado: "Closed",
+        redesSociales: "Social media",
+        comoLlegar: "📍 Get directions",
+        fotosMenu: "Menu photos",
+        sinFotos: "No photos uploaded yet.",
+        platos: "Dishes",
+        sinPlatos: "No dishes added yet.",
+        errorConexion: "Could not connect to the API."
+      }
+    };
+
+    let idiomaActual = localStorage.getItem("idioma") || "es";
+    let restauranteActual = null;
 
     // Sacamos el id del restaurante de la URL, por ejemplo: restaurante.html?id=abc-123
     const params = new URLSearchParams(window.location.search);
     const id = params.get("id");
 
     async function cargarDetalle() {
+      const t = traducciones[idiomaActual];
+
       if (!id) {
-        document.getElementById("contenido").innerHTML = "<p>No se especificó un restaurante.</p>";
+        document.getElementById("contenido").innerHTML = `<p>${t.sinId}</p>`;
         return;
       }
 
@@ -201,98 +255,99 @@
         const response = await fetch(`${API_URL}/api/restaurants/${id}`);
 
         if (!response.ok) {
-          document.getElementById("contenido").innerHTML = "<p>No se encontró el restaurante.</p>";
+          document.getElementById("contenido").innerHTML = `<p>${t.noEncontrado}</p>`;
           return;
         }
 
-        
-        const r = await response.json();
-        const claseEstado = r.isOpen ? "estado-abierto" : "estado-cerrado";
-        const textoEstado = r.isOpen ? "Abierto" : "Cerrado";
-
-        document.getElementById("banner-titulo").textContent = r.name;
-        if (r.logoUrl) {
-          document.getElementById("banner-imagen").src = r.logoUrl;
-          document.getElementById("banner-imagen").style.display = "block";
-          document.getElementById("banner-avatar").src = r.logoUrl;
-          document.getElementById("banner-avatar").style.display = "block";
-        }
-
-        let html = `<p>${r.description ?? "Sin descripción"}</p>`;
-
-
-
-        // Validación de Dirección
-        const direccionTexto = r.address && r.address.trim() !== "" ? r.address : "No especificada";
-        html += `<p><strong>Dirección:</strong> ${direccionTexto}</p>`;
-        
-        // Validación de WhatsApp / Teléfono
-        if (r.phone && r.phone.trim() !== "") {
-          const telefonoLimpio = r.phone.replace(/[^0-9]/g, "");
-          const linkWhatsapp = `https://wa.me/${telefonoLimpio}`;
-          html += `<p><strong>WhatsApp:</strong> <a href="${linkWhatsapp}" target="_blank" style="color: var(--acento); text-decoration: none;">${r.phone}</a></p>`;
-        } else {
-          html += `<p><strong>WhatsApp:</strong> No especificado</p>`;
-        }
-
-        html += `<p><strong>Estado:</strong> <span class="${claseEstado}">${textoEstado}</span></p>`;
-
-                const tieneRedes = r.tikTokLink || r.instagramLink || r.facebookLink;
-        if (tieneRedes) {
-
-          html += `<button type="button" class="boton-redes" onclick="mostrarRedes()">Redes sociales</button>`;
-
-          html += `<div id="redes-sociales" style="display: none; margin-top: 10px;">`;
-          if (r.tikTokLink) {
-            html += `<p><strong>TikTok:</strong> <a href="${r.tikTokLink}" target="_blank">${r.tikTokLink}</a></p>`;
-          }
-          if (r.instagramLink) {
-            html += `<p><strong>Instagram:</strong> <a href="${r.instagramLink}" target="_blank">${r.instagramLink}</a></p>`;
-          }
-          if (r.facebookLink) {
-            html += `<p><strong>Facebook:</strong> <a href="${r.facebookLink}" target="_blank">${r.facebookLink}</a></p>`;
-          }
-          html += `</div>`;
-        }
-
-        // Validación de Coordenadas para el botón "Cómo llegar"
-        if (r.latitude != null && r.longitude != null) {
-          const linkMaps = `https://www.google.com/maps/search/?api=1&query=${r.latitude},${r.longitude}`;
-          html += `<a class="boton-llegar" href="${linkMaps}" target="_blank">📍 Cómo llegar</a>`;
-        }
-
-        html += `<h2>Fotos del menú</h2>`;
-        if (r.menuPhotos.length === 0) {
-          html += `<p>No hay fotos cargadas.</p>`;
-        } else {
-          r.menuPhotos.forEach(foto => {
-            html += `<img src="${foto.url}">`;
-          });
-        }
-
-        html += `<h2>Platos</h2>`;
-        if (r.menuItems.length === 0) {
-          html += `<p>No hay platos cargados.</p>`;
-        } else {
-          r.menuItems.forEach(item => {
-            html += `<div class="plato"><strong>${item.name}</strong> - $${item.price}<br>${item.description ?? ""}</div>`;
-          });
-        }
-
-        document.getElementById("contenido").innerHTML = html;
+        restauranteActual = await response.json();
+        renderizarDetalle();
       } catch (err) {
-        document.getElementById("contenido").innerHTML = "<p>No se pudo conectar con la API.</p>";
+        document.getElementById("contenido").innerHTML = `<p>${t.errorConexion}</p>`;
       }
     }
 
-        function mostrarRedes() {
+    function renderizarDetalle() {
+      if (!restauranteActual) return;
+      const t = traducciones[idiomaActual];
+      const r = restauranteActual;
+      const claseEstado = r.isOpen ? "estado-abierto" : "estado-cerrado";
+      const textoEstado = r.isOpen ? t.abierto : t.cerrado;
+
+      document.getElementById("banner-titulo").textContent = r.name;
+      if (r.logoUrl) {
+        document.getElementById("banner-imagen").src = r.logoUrl;
+        document.getElementById("banner-imagen").style.display = "block";
+        document.getElementById("banner-avatar").src = r.logoUrl;
+        document.getElementById("banner-avatar").style.display = "block";
+      }
+
+      let html = `<p>${r.description ?? t.sinDescripcion}</p>`;
+
+      const direccionTexto = r.address && r.address.trim() !== "" ? r.address : t.direccionNoEspecificada;
+      html += `<p><strong>${t.direccion}</strong> ${direccionTexto}</p>`;
+
+      if (r.phone && r.phone.trim() !== "") {
+        const telefonoLimpio = r.phone.replace(/[^0-9]/g, "");
+        const linkWhatsapp = `https://wa.me/${telefonoLimpio}`;
+        html += `<p><strong>${t.whatsapp}</strong> <a href="${linkWhatsapp}" target="_blank" style="color: var(--acento); text-decoration: none;">${r.phone}</a></p>`;
+      } else {
+        html += `<p><strong>${t.whatsapp}</strong> ${t.whatsappNoEspecificado}</p>`;
+      }
+
+      html += `<p><strong>${t.estado}</strong> <span class="${claseEstado}">${textoEstado}</span></p>`;
+
+      const tieneRedes = r.tikTokLink || r.instagramLink || r.facebookLink;
+      if (tieneRedes) {
+        html += `<button type="button" class="boton-redes" onclick="mostrarRedes()">${t.redesSociales}</button>`;
+
+        html += `<div id="redes-sociales" style="display: none; margin-top: 10px;">`;
+        if (r.tikTokLink) {
+          html += `<p><strong>TikTok:</strong> <a href="${r.tikTokLink}" target="_blank">${r.tikTokLink}</a></p>`;
+        }
+        if (r.instagramLink) {
+          html += `<p><strong>Instagram:</strong> <a href="${r.instagramLink}" target="_blank">${r.instagramLink}</a></p>`;
+        }
+        if (r.facebookLink) {
+          html += `<p><strong>Facebook:</strong> <a href="${r.facebookLink}" target="_blank">${r.facebookLink}</a></p>`;
+        }
+        html += `</div>`;
+      }
+
+      if (r.latitude != null && r.longitude != null) {
+        const linkMaps = `https://www.google.com/maps/search/?api=1&query=${r.latitude},${r.longitude}`;
+        html += `<a class="boton-llegar" href="${linkMaps}" target="_blank">${t.comoLlegar}</a>`;
+      }
+
+      html += `<h2>${t.fotosMenu}</h2>`;
+      if (r.menuPhotos.length === 0) {
+        html += `<p>${t.sinFotos}</p>`;
+      } else {
+        r.menuPhotos.forEach(foto => {
+          html += `<img src="${foto.url}">`;
+        });
+      }
+
+      html += `<h2>${t.platos}</h2>`;
+      if (r.menuItems.length === 0) {
+        html += `<p>${t.sinPlatos}</p>`;
+      } else {
+        r.menuItems.forEach(item => {
+          html += `<div class="plato"><strong>${item.name}</strong> - $${item.price}<br>${item.description ?? ""}</div>`;
+        });
+      }
+
+      document.getElementById("contenido").innerHTML = html;
+    }
+
+    function mostrarRedes() {
       const div = document.getElementById("redes-sociales");
       div.style.display = div.style.display === "none" ? "block" : "none";
     }
 
     function aplicarTema(tema) {
       document.documentElement.setAttribute("data-tema", tema);
-      document.getElementById("boton-tema").textContent = tema === "oscuro" ? "☀️ Modo claro" : "🌙 Modo oscuro";
+      const t = traducciones[idiomaActual];
+      document.getElementById("boton-tema").textContent = tema === "oscuro" ? t.temaClaro : t.temaOscuro;
       localStorage.setItem("tema", tema);
     }
 
@@ -301,7 +356,28 @@
       aplicarTema(temaActual === "oscuro" ? "claro" : "oscuro");
     }
 
+    function aplicarIdioma(idioma) {
+      idiomaActual = idioma;
+      localStorage.setItem("idioma", idioma);
+      const t = traducciones[idioma];
+
+      document.getElementById("link-volver").textContent = t.linkVolver;
+      document.getElementById("boton-idioma").textContent = t.botonIdioma;
+
+      const temaActualAhora = document.documentElement.getAttribute("data-tema");
+      document.getElementById("boton-tema").textContent = temaActualAhora === "oscuro" ? t.temaClaro : t.temaOscuro;
+
+      if (restauranteActual) {
+        renderizarDetalle();
+      }
+    }
+
+    function cambiarIdioma() {
+      aplicarIdioma(idiomaActual === "es" ? "en" : "es");
+    }
+
     aplicarTema(localStorage.getItem("tema") || "claro");
+    aplicarIdioma(idiomaActual);
 
     cargarDetalle();
   </script>

@@ -35,7 +35,7 @@
       color: var(--texto);
       transition: background 0.2s, color 0.2s;
     }
-    input {
+    input, select {
       display: block;
       margin-bottom: 10px;
       padding: 8px;
@@ -45,6 +45,8 @@
       color: var(--texto);
       border: 1px solid var(--borde);
       border-radius: 4px;
+      font-family: inherit;
+      font-size: 1rem;
     }
     button {
       padding: 14px 28px;
@@ -111,14 +113,16 @@
       margin: 0;
       color: var(--texto);
     }
-    #boton-tema {
+    
+
+    #boton-tema, #boton-idioma {
       background: rgba(255, 255, 255, 0.85);
       color: var(--texto);
       border: 1px solid var(--borde);
-      position: absolute;
-      top: 10px;
-      right: 10px;
     }
+
+
+
     #boton-cerrar-sesion {
       background: rgba(255, 255, 255, 0.85);
       color: var(--texto);
@@ -144,74 +148,76 @@
 </head>
 <body>
 
+
+
+
   <div id="banner-portada">
     <img id="banner-imagen" class="banner-fondo" src="" alt="">
     <button id="boton-cerrar-sesion" onclick="cerrarSesion()">Cerrar sesión</button>
-    <button id="boton-tema" onclick="cambiarTema()">🌙 Modo oscuro</button>
-        <img id="banner-avatar" class="banner-avatar" src="" alt="Logo">
+    <div style="position: absolute; top: 10px; right: 10px; display: flex; gap: 8px;">
+      <button id="boton-idioma" onclick="cambiarIdioma()">🌐 English</button>
+      <button id="boton-tema" onclick="cambiarTema()">🌙 Modo oscuro</button>
+    </div>
+    <img id="banner-avatar" class="banner-avatar" src="" alt="Logo">
   </div>
 
   <div id="contenido">Cargando...</div>
   <p id="error-carga"></p>
 
-    <div id="seccion-logo">
-  <button type="button" onclick="mostrarLogo()">Logo del negocio</button>
+  <div id="seccion-logo">
+    <button type="button" id="boton-mostrar-logo" onclick="mostrarLogo()">Logo del negocio</button>
 
-  <div id="contenido-logo" style="display: none;">
-  <div id="logo-actual"></div>
+    <div id="contenido-logo" style="display: none;">
+      <div id="logo-actual"></div>
 
-  <input type="file" id="input-logo" accept="image/*" onchange="previsualizarLogo(event)">
-  <img id="logo-preview" class="foto-menu" style="display: none;">
-  <button onclick="subirLogo()">Subir logo</button>
+      <input type="file" id="input-logo" accept="image/*" onchange="previsualizarLogo(event)">
+      <img id="logo-preview" class="foto-menu" style="display: none;">
+      <button id="boton-subir-logo" onclick="subirLogo()">Subir logo</button>
 
-  <p id="error-logo"></p>
-  <p id="exito-logo"></p>
-  </div>
+      <p id="error-logo"></p>
+      <p id="exito-logo"></p>
+    </div>
   </div>
 
   <div id="seccion-fotos">
-  <h3>Fotos del menú</h3>
-  <div id="galeria-fotos"></div>
-  <input type="file" id="input-foto" accept="image/*">
-  <button onclick="subirFoto()">Subir foto</button>
-  <p id="error-foto"></p>
-  <p id="exito-foto"></p>
+    <h3 id="titulo-fotos-menu">Fotos del menú</h3>
+    <div id="galeria-fotos"></div>
+    <input type="file" id="input-foto" accept="image/*">
+    <button id="boton-subir-foto" onclick="subirFoto()">Subir foto</button>
+    <p id="error-foto"></p>
+    <p id="exito-foto"></p>
   </div>
 
   <div id="seccion-platos">
-  <h3>Platos del menú</h3>
-  <div id="lista-platos"></div>
-  <button onclick="mostrarFormPlato()">Agregar plato</button>
+    <h3 id="titulo-platos-menu">Platos del menú</h3>
+    <div id="lista-platos"></div>
+    <button id="boton-agregar-plato" onclick="mostrarFormPlato()">Agregar plato</button>
   </div>
 
-      <div id="form-plato">
-  <h3 id="titulo-form-plato">Nuevo plato</h3>
-  <input type="hidden" id="plato-id" value="">
-  <input type="text" id="plato-nombre" placeholder="Nombre del plato">
-  <input type="text" id="plato-descripcion" placeholder="Descripción (opcional)">
-  <input type="text" id="plato-precio" placeholder="Precio (ej: 8.50)">
-  <button id="boton-guardar-plato" onclick="guardarPlato()">Guardar plato</button>
-  <button type="button" onclick="cancelarFormPlato()">Cancelar</button>
-  <p id="error-plato"></p>
-  <p id="exito-plato"></p>
+  <div id="form-plato">
+    <h3 id="titulo-form-plato">Nuevo plato</h3>
+    <input type="hidden" id="plato-id" value="">
+    <input type="text" id="plato-nombre" placeholder="Nombre del plato">
+    <input type="text" id="plato-descripcion" placeholder="Descripción (opcional)">
+    <input type="text" id="plato-precio" placeholder="Precio (ej: 8.50)">
+    <button id="boton-guardar-plato" onclick="guardarPlato()">Guardar plato</button>
+    <button type="button" id="boton-cancelar-plato" onclick="cancelarFormPlato()">Cancelar</button>
+    <p id="error-plato"></p>
+    <p id="exito-plato"></p>
   </div>
 
-
-
-<div id="form-editar">
-    <h3>Editar perfil</h3>
+  <div id="form-editar">
+    <h3 id="titulo-form-editar">Editar perfil</h3>
     <input type="text" id="editar-nombre" placeholder="Nombre del restaurante">
     <input type="text" id="editar-descripcion" placeholder="Descripción (opcional)">
     <input type="text" id="editar-direccion" placeholder="Dirección">
     <input type="text" id="editar-telefono" placeholder="Teléfono con código de país (ej: 58 4141234567)" onkeypress="return /[0-9\s-]/.test(event.key)">
     <input type="text" id="editar-coords" placeholder="Coordenadas (7.759796, -72.214559)">
 
-    
     <input type="text" id="editar-tiktok" placeholder="Link de TikTok (opcional)">
     <input type="text" id="editar-instagram" placeholder="Link de Instagram (opcional)">
     <input type="text" id="editar-facebook" placeholder="Link de Facebook (opcional)">
-
-
+    <input type="email" id="editar-contacto-email" placeholder="Correo de contacto (opcional, para avisos)">
 
     <select id="editar-categoria">
       <option value="Bodegas y Minimarkets">Bodegas y Minimarkets</option>
@@ -233,11 +239,15 @@
     </select>
 
     <button id="boton-guardar-perfil" onclick="guardarPerfil()">Guardar cambios</button>
-
-    <button type="button" onclick="cancelarEdicionPerfil()">Cancelar</button>
+    <button type="button" id="boton-cancelar-perfil" onclick="cancelarEdicionPerfil()">Cancelar</button>
     <p id="error-perfil"></p>
     <p id="exito-perfil"></p>
   </div>
+
+
+
+
+
 
   <script>
     const API_URL = "https://gofood-api-production.up.railway.app";
@@ -248,8 +258,156 @@
     }
 
     let miRestaurante = null;
+    let modoFormPlato = "nuevo";
+
+    const traducciones = {
+      es: {
+        cerrarSesion: "Cerrar sesión",
+        temaOscuro: "🌙 Modo oscuro",
+        temaClaro: "☀️ Modo claro",
+        botonIdioma: "🌐 English",
+        errorConexion: "No se pudo conectar con la API.",
+        logoNegocio: "Logo del negocio",
+        subirLogo: "Subir logo",
+        sinLogo: "No hay logo cargado todavía.",
+        elegirImagenPrimero: "Elegí una imagen primero.",
+        noSePudoSubirLogo: "No se pudo subir el logo.",
+        logoActualizado: "Logo actualizado con éxito.",
+        fotosMenu: "Fotos del menú",
+        subirFoto: "Subir foto",
+        sinFotos: "No hay fotos cargadas todavía.",
+        noSePudoSubirFoto: "No se pudo subir la foto.",
+        fotoSubida: "Foto subida con éxito.",
+        eliminar: "Eliminar",
+        confirmarEliminarFoto: "¿Seguro que querés eliminar esta foto?",
+        noSePudoEliminarFoto: "No se pudo eliminar la foto.",
+        platosMenu: "Platos del menú",
+        agregarPlato: "Agregar plato",
+        sinPlatos: "No hay platos cargados todavía.",
+        editar: "Editar",
+        confirmarEliminarPlato: "¿Seguro que querés eliminar este plato?",
+        noSePudoEliminarPlato: "No se pudo eliminar el plato.",
+        nuevoPlato: "Nuevo plato",
+        editarPlato: "Editar plato",
+        platoNombrePlaceholder: "Nombre del plato",
+        platoDescripcionPlaceholder: "Descripción (opcional)",
+        platoPrecioPlaceholder: "Precio (ej: 8.50)",
+        precioInvalido: "Ingresá un precio válido (ej: 8.50).",
+        guardarPlato: "Guardar plato",
+        cancelar: "Cancelar",
+        noSePudoGuardarPlato: "No se pudo guardar el plato.",
+        editarPerfil: "Editar perfil",
+        nombreRestaurantePlaceholder: "Nombre del restaurante",
+        descripcionPlaceholder: "Descripción (opcional)",
+        direccionPlaceholder: "Dirección",
+        telefonoPlaceholder: "Teléfono con código de país (ej: 58 4141234567)",
+        coordsPlaceholder: "Coordenadas (7.759796, -72.214559)",
+        tiktokPlaceholder: "Link de TikTok (opcional)",
+        instagramPlaceholder: "Link de Instagram (opcional)",
+        facebookPlaceholder: "Link de Facebook (opcional)",
+        contactoEmailPlaceholder: "Correo de contacto (opcional, para avisos)",
+        guardarCambios: "Guardar cambios",
+        guardando: "Guardando...",
+        telefonoInvalido: "El teléfono solo puede contener números, espacios y guiones.",
+        coordsInvalidas: "Las coordenadas deben tener el formato: número, coma, número (ej: 7.75, -72.21).",
+        noSePudoGuardarPerfil: "No se pudo guardar el perfil. Revisá los datos.",
+        perfilActualizado: "Perfil actualizado con éxito.",
+        noSePudoCambiarEstado: "No se pudo cambiar el estado.",
+        descripcion: "Descripción:",
+        direccion: "Dirección:",
+        telefono: "Teléfono:",
+        estado: "Estado:",
+        abierto: "Abierto",
+        cerrado: "Cerrado",
+        correoContacto: "Correo de contacto:",
+        cambiarA: "Cambiar a"
+      },
+      en: {
+        cerrarSesion: "Log out",
+        temaOscuro: "🌙 Dark mode",
+        temaClaro: "☀️ Light mode",
+        botonIdioma: "🌐 Español",
+        errorConexion: "Could not connect to the API.",
+        logoNegocio: "Business logo",
+        subirLogo: "Upload logo",
+        sinLogo: "No logo uploaded yet.",
+        elegirImagenPrimero: "Choose an image first.",
+        noSePudoSubirLogo: "Could not upload the logo.",
+        logoActualizado: "Logo updated successfully.",
+        fotosMenu: "Menu photos",
+        subirFoto: "Upload photo",
+        sinFotos: "No photos uploaded yet.",
+        noSePudoSubirFoto: "Could not upload the photo.",
+        fotoSubida: "Photo uploaded successfully.",
+        eliminar: "Delete",
+        confirmarEliminarFoto: "Are you sure you want to delete this photo?",
+        noSePudoEliminarFoto: "Could not delete the photo.",
+        platosMenu: "Menu dishes",
+        agregarPlato: "Add dish",
+        sinPlatos: "No dishes added yet.",
+        editar: "Edit",
+        confirmarEliminarPlato: "Are you sure you want to delete this dish?",
+        noSePudoEliminarPlato: "Could not delete the dish.",
+        nuevoPlato: "New dish",
+        editarPlato: "Edit dish",
+        platoNombrePlaceholder: "Dish name",
+        platoDescripcionPlaceholder: "Description (optional)",
+        platoPrecioPlaceholder: "Price (e.g.: 8.50)",
+        precioInvalido: "Enter a valid price (e.g.: 8.50).",
+        guardarPlato: "Save dish",
+        cancelar: "Cancel",
+        noSePudoGuardarPlato: "Could not save the dish.",
+        editarPerfil: "Edit profile",
+        nombreRestaurantePlaceholder: "Restaurant name",
+        descripcionPlaceholder: "Description (optional)",
+        direccionPlaceholder: "Address",
+        telefonoPlaceholder: "Phone with country code (e.g.: 58 4141234567)",
+        coordsPlaceholder: "Coordinates (7.759796, -72.214559)",
+        tiktokPlaceholder: "TikTok link (optional)",
+        instagramPlaceholder: "Instagram link (optional)",
+        facebookPlaceholder: "Facebook link (optional)",
+        contactoEmailPlaceholder: "Contact email (optional, for notices)",
+        guardarCambios: "Save changes",
+        guardando: "Saving...",
+        telefonoInvalido: "The phone number can only contain numbers, spaces and hyphens.",
+        coordsInvalidas: "Coordinates must be in the format: number, comma, number (e.g.: 7.75, -72.21).",
+        noSePudoGuardarPerfil: "Could not save the profile. Check the data.",
+        perfilActualizado: "Profile updated successfully.",
+        noSePudoCambiarEstado: "Could not change the status.",
+        descripcion: "Description:",
+        direccion: "Address:",
+        telefono: "Phone:",
+        estado: "Status:",
+        abierto: "Open",
+        cerrado: "Closed",
+        correoContacto: "Contact email:",
+        cambiarA: "Switch to"
+      }
+    };
+
+    const categoriasEnIngles = {
+      "Bodegas y Minimarkets": "Grocery & Convenience Stores",
+      "Caucheras": "Tire Shops",
+      "Clínicas": "Clinics",
+      "Comida": "Food",
+      "Entretenimiento": "Entertainment",
+      "Estaciones de Servicio": "Gas Stations",
+      "Farmacias": "Pharmacies",
+      "Hospitales": "Hospitals",
+      "Licorerías": "Liquor Stores",
+      "Repuestos de Carro": "Car Parts",
+      "Repuestos de Moto": "Motorcycle Parts",
+      "Repuestos Línea Pesada": "Heavy Equipment Parts",
+      "Supermercados": "Supermarkets",
+      "Talleres Mecánicos de Carro": "Car Repair Shops",
+      "Talleres Mecánicos de Moto": "Motorcycle Repair Shops",
+      "Veterinarias": "Veterinary Clinics"
+    };
+
+    let idiomaActual = localStorage.getItem("idioma") || "es";
 
     async function cargarMiPerfil() {
+      const t = traducciones[idiomaActual];
       try {
         const response = await fetch(`${API_URL}/api/restaurants/me`, {
           headers: { "Authorization": `Bearer ${token}` }
@@ -264,28 +422,29 @@
         miRestaurante = await response.json();
         renderizarPerfil();
       } catch (err) {
-        document.getElementById("error-carga").textContent = "No se pudo conectar con la API.";
+        document.getElementById("error-carga").textContent = t.errorConexion;
       }
     }
 
     function renderizarPerfil() {
+      const t = traducciones[idiomaActual];
       const r = miRestaurante;
       const claseEstado = r.isOpen ? "estado-abierto" : "estado-cerrado";
-      const textoEstado = r.isOpen ? "Abierto" : "Cerrado";
+      const textoEstado = r.isOpen ? t.abierto : t.cerrado;
 
       document.getElementById("contenido").innerHTML = `
         <h2>${r.name}</h2>
-        <div class="campo"><strong>Descripción:</strong> ${r.description ?? "-"}</div>
-        <div class="campo"><strong>Dirección:</strong> ${r.address ?? "-"}</div>
-        <div class="campo"><strong>Teléfono:</strong> ${r.phone ?? "-"}</div>
+        <div class="campo"><strong>${t.descripcion}</strong> ${r.description ?? "-"}</div>
+        <div class="campo"><strong>${t.direccion}</strong> ${r.address ?? "-"}</div>
+        <div class="campo"><strong>${t.telefono}</strong> ${r.phone ?? "-"}</div>
         <div class="campo"><strong>TikTok:</strong> ${r.tikTokLink ?? "-"}</div>
         <div class="campo"><strong>Instagram:</strong> ${r.instagramLink ?? "-"}</div>
         <div class="campo"><strong>Facebook:</strong> ${r.facebookLink ?? "-"}</div>
+        <div class="campo"><strong>${t.correoContacto}</strong> ${r.contactEmail ?? "-"}</div>
 
-
-        <div class="campo"><strong>Estado:</strong> <span class="${claseEstado}">${textoEstado}</span></div>
-        <button onclick="cambiarEstado()">Cambiar a ${r.isOpen ? "Cerrado" : "Abierto"}</button>
-        <button onclick="mostrarEdicionPerfil()">Editar perfil</button>
+        <div class="campo"><strong>${t.estado}</strong> <span class="${claseEstado}">${textoEstado}</span></div>
+        <button onclick="cambiarEstado()">${t.cambiarA} ${r.isOpen ? t.cerrado : t.abierto}</button>
+        <button onclick="mostrarEdicionPerfil()">${t.editarPerfil}</button>
       `;
 
       renderizarLogo();
@@ -294,6 +453,7 @@
     }
 
     function renderizarLogo() {
+      const t = traducciones[idiomaActual];
       const contenedor = document.getElementById("logo-actual");
       const bannerImg = document.getElementById("banner-imagen");
       const avatarImg = document.getElementById("banner-avatar");
@@ -305,35 +465,37 @@
         avatarImg.src = miRestaurante.logoUrl;
         avatarImg.style.display = "block";
       } else {
-        contenedor.innerHTML = "<p>No hay logo cargado todavía.</p>";
+        contenedor.innerHTML = `<p>${t.sinLogo}</p>`;
         bannerImg.style.display = "none";
         avatarImg.style.display = "none";
       }
     }
 
     function renderizarFotos() {
+      const t = traducciones[idiomaActual];
       const galeria = document.getElementById("galeria-fotos");
       const fotos = miRestaurante.menuPhotos || [];
 
       if (fotos.length === 0) {
-        galeria.innerHTML = "<p>No hay fotos cargadas todavía.</p>";
+        galeria.innerHTML = `<p>${t.sinFotos}</p>`;
         return;
       }
 
       galeria.innerHTML = fotos.map(f => `
         <div style="display: inline-block; text-align: center;">
           <img class="foto-menu" src="${f.url}"><br>
-          <button onclick="eliminarFoto('${f.id}')">Eliminar</button>
+          <button onclick="eliminarFoto('${f.id}')">${t.eliminar}</button>
         </div>
       `).join("");
     }
 
     function renderizarPlatos() {
+      const t = traducciones[idiomaActual];
       const lista = document.getElementById("lista-platos");
       const platos = miRestaurante.menuItems || [];
 
       if (platos.length === 0) {
-        lista.innerHTML = "<p>No hay platos cargados todavía.</p>";
+        lista.innerHTML = `<p>${t.sinPlatos}</p>`;
         return;
       }
 
@@ -341,26 +503,27 @@
         <div class="plato-item">
           <strong>${p.name}</strong> - $${p.price}<br>
           ${p.description ?? ""}<br>
-          <button onclick='mostrarFormPlato(${JSON.stringify(p)})'>Editar</button>
-          <button onclick="eliminarPlato('${p.id}')">Eliminar</button>
+          <button onclick='mostrarFormPlato(${JSON.stringify(p)})'>${t.editar}</button>
+          <button onclick="eliminarPlato('${p.id}')">${t.eliminar}</button>
         </div>
       `).join("");
     }
 
-    
-
-        function mostrarFormPlato(plato) {
+    function mostrarFormPlato(plato) {
+      const t = traducciones[idiomaActual];
       document.getElementById("error-plato").textContent = "";
       document.getElementById("exito-plato").textContent = "";
 
       if (plato) {
-        document.getElementById("titulo-form-plato").textContent = "Editar plato";
+        modoFormPlato = "editar";
+        document.getElementById("titulo-form-plato").textContent = t.editarPlato;
         document.getElementById("plato-id").value = plato.id;
         document.getElementById("plato-nombre").value = plato.name;
         document.getElementById("plato-descripcion").value = plato.description ?? "";
         document.getElementById("plato-precio").value = plato.price;
       } else {
-        document.getElementById("titulo-form-plato").textContent = "Nuevo plato";
+        modoFormPlato = "nuevo";
+        document.getElementById("titulo-form-plato").textContent = t.nuevoPlato;
         document.getElementById("plato-id").value = "";
         document.getElementById("plato-nombre").value = "";
         document.getElementById("plato-descripcion").value = "";
@@ -370,16 +533,13 @@
       document.getElementById("form-plato").style.display = "block";
       window.scrollTo(0, document.body.scrollHeight);
     }
-       
-
 
     function cancelarFormPlato() {
       document.getElementById("form-plato").style.display = "none";
     }
-    
-       
 
     async function guardarPlato() {
+      const t = traducciones[idiomaActual];
       const errorEl = document.getElementById("error-plato");
       const exitoEl = document.getElementById("exito-plato");
       errorEl.textContent = "";
@@ -389,7 +549,7 @@
       const precio = parseFloat(document.getElementById("plato-precio").value);
 
       if (isNaN(precio) || precio < 0) {
-        errorEl.textContent = "Ingresá un precio válido (ej: 8.50).";
+        errorEl.textContent = t.precioInvalido;
         return;
       }
 
@@ -416,7 +576,7 @@
         });
 
         if (!response.ok) {
-          errorEl.textContent = "No se pudo guardar el plato.";
+          errorEl.textContent = t.noSePudoGuardarPlato;
           return;
         }
 
@@ -432,13 +592,13 @@
         renderizarPlatos();
         cancelarFormPlato();
       } catch (err) {
-        errorEl.textContent = "No se pudo conectar con la API.";
+        errorEl.textContent = t.errorConexion;
       }
     }
 
-
     async function eliminarPlato(id) {
-      const confirmar = confirm("¿Seguro que querés eliminar este plato?");
+      const t = traducciones[idiomaActual];
+      const confirmar = confirm(t.confirmarEliminarPlato);
       if (!confirmar) return;
 
       try {
@@ -448,19 +608,20 @@
         });
 
         if (!response.ok) {
-          alert("No se pudo eliminar el plato.");
+          alert(t.noSePudoEliminarPlato);
           return;
         }
 
         miRestaurante.menuItems = miRestaurante.menuItems.filter(p => p.id !== id);
         renderizarPlatos();
       } catch (err) {
-        alert("No se pudo conectar con la API.");
+        alert(t.errorConexion);
       }
     }
 
     async function eliminarFoto(photoId) {
-      const confirmar = confirm("¿Seguro que querés eliminar esta foto?");
+      const t = traducciones[idiomaActual];
+      const confirmar = confirm(t.confirmarEliminarFoto);
       if (!confirmar) return;
 
       try {
@@ -470,18 +631,19 @@
         });
 
         if (!response.ok) {
-          alert("No se pudo eliminar la foto.");
+          alert(t.noSePudoEliminarFoto);
           return;
         }
 
         miRestaurante.menuPhotos = miRestaurante.menuPhotos.filter(f => f.id !== photoId);
         renderizarFotos();
       } catch (err) {
-        alert("No se pudo conectar con la API.");
+        alert(t.errorConexion);
       }
     }
 
     async function subirFoto() {
+      const t = traducciones[idiomaActual];
       const errorEl = document.getElementById("error-foto");
       const exitoEl = document.getElementById("exito-foto");
       errorEl.textContent = "";
@@ -491,7 +653,7 @@
       const archivo = inputFoto.files[0];
 
       if (!archivo) {
-        errorEl.textContent = "Elegí una imagen primero.";
+        errorEl.textContent = t.elegirImagenPrimero;
         return;
       }
 
@@ -506,7 +668,7 @@
         });
 
         if (!response.ok) {
-          errorEl.textContent = "No se pudo subir la foto.";
+          errorEl.textContent = t.noSePudoSubirFoto;
           return;
         }
 
@@ -516,9 +678,9 @@
         renderizarFotos();
         renderizarPlatos();
         inputFoto.value = "";
-        exitoEl.textContent = "Foto subida con éxito.";
+        exitoEl.textContent = t.fotoSubida;
       } catch (err) {
-        errorEl.textContent = "No se pudo conectar con la API.";
+        errorEl.textContent = t.errorConexion;
       }
     }
 
@@ -534,6 +696,7 @@
     }
 
     async function subirLogo() {
+      const t = traducciones[idiomaActual];
       const errorEl = document.getElementById("error-logo");
       const exitoEl = document.getElementById("exito-logo");
       errorEl.textContent = "";
@@ -543,7 +706,7 @@
       const archivo = inputLogo.files[0];
 
       if (!archivo) {
-        errorEl.textContent = "Elegí una imagen primero.";
+        errorEl.textContent = t.elegirImagenPrimero;
         return;
       }
 
@@ -558,18 +721,17 @@
         });
 
         if (!response.ok) {
-          errorEl.textContent = "No se pudo subir el logo.";
+          errorEl.textContent = t.noSePudoSubirLogo;
           return;
         }
 
-        
         const data = await response.json();
         miRestaurante.logoUrl = data.url;
         renderizarLogo();
         inputLogo.value = "";
-        exitoEl.textContent = "Logo actualizado con éxito.";
+        exitoEl.textContent = t.logoActualizado;
       } catch (err) {
-        errorEl.textContent = "No se pudo conectar con la API.";
+        errorEl.textContent = t.errorConexion;
       }
     }
 
@@ -579,9 +741,7 @@
     }
 
     async function cambiarEstado() {
-
-
-
+      const t = traducciones[idiomaActual];
       const nuevoEstado = !miRestaurante.isOpen;
 
       try {
@@ -595,14 +755,14 @@
         });
 
         if (!response.ok) {
-          alert("No se pudo cambiar el estado.");
+          alert(t.noSePudoCambiarEstado);
           return;
         }
 
         miRestaurante.isOpen = nuevoEstado;
         renderizarPerfil();
       } catch (err) {
-        alert("No se pudo conectar con la API.");
+        alert(t.errorConexion);
       }
     }
 
@@ -614,11 +774,11 @@
       document.getElementById("editar-direccion").value = r.address ?? "";
       document.getElementById("editar-telefono").value = r.phone ?? "";
       document.getElementById("editar-coords").value = `${r.latitude}, ${r.longitude}`;
-      
+
       document.getElementById("editar-tiktok").value = r.tikTokLink ?? "";
       document.getElementById("editar-instagram").value = r.instagramLink ?? "";
       document.getElementById("editar-facebook").value = r.facebookLink ?? "";
-
+      document.getElementById("editar-contacto-email").value = r.contactEmail ?? "";
 
       document.getElementById("editar-categoria").value = r.category || "Comida";
 
@@ -633,6 +793,7 @@
     }
 
     async function guardarPerfil() {
+      const t = traducciones[idiomaActual];
       const errorEl = document.getElementById("error-perfil");
       const exitoEl = document.getElementById("exito-perfil");
       errorEl.textContent = "";
@@ -641,14 +802,14 @@
       const telefonoIngresado = document.getElementById("editar-telefono").value;
       const formatoTelefonoValido = /^[0-9\s-]+$/.test(telefonoIngresado);
       if (!formatoTelefonoValido) {
-        errorEl.textContent = "El teléfono solo puede contener números, espacios y guiones.";
+        errorEl.textContent = t.telefonoInvalido;
         return;
       }
 
       const coordsTexto = document.getElementById("editar-coords").value;
       const formatoCoordsValido = /^-?\d+(\.\d+)?\s*,\s*-?\d+(\.\d+)?$/.test(coordsTexto);
       if (!formatoCoordsValido) {
-        errorEl.textContent = "Las coordenadas deben tener el formato: número, coma, número (ej: 7.75, -72.21).";
+        errorEl.textContent = t.coordsInvalidas;
         return;
       }
 
@@ -661,15 +822,16 @@
         phone: telefonoIngresado,
         latitude: partes[0],
         longitude: partes[1],
-                tikTokLink: document.getElementById("editar-tiktok").value || null,
+        tikTokLink: document.getElementById("editar-tiktok").value || null,
         instagramLink: document.getElementById("editar-instagram").value || null,
         facebookLink: document.getElementById("editar-facebook").value || null,
+        contactEmail: document.getElementById("editar-contacto-email").value || null,
         category: document.getElementById("editar-categoria").value
       };
 
       const botonEl = document.getElementById("boton-guardar-perfil");
       botonEl.disabled = true;
-      botonEl.textContent = "Guardando...";
+      botonEl.textContent = t.guardando;
 
       try {
         const response = await fetch(`${API_URL}/api/restaurants/me`, {
@@ -682,19 +844,19 @@
         });
 
         if (!response.ok) {
-          errorEl.textContent = "No se pudo guardar el perfil. Revisá los datos.";
+          errorEl.textContent = t.noSePudoGuardarPerfil;
           return;
         }
 
         miRestaurante = { ...miRestaurante, ...body };
         renderizarPerfil();
-        exitoEl.textContent = "Perfil actualizado con éxito.";
+        exitoEl.textContent = t.perfilActualizado;
         setTimeout(() => { document.getElementById("form-editar").style.display = "none"; }, 1200);
       } catch (err) {
-        errorEl.textContent = "No se pudo conectar con la API.";
+        errorEl.textContent = t.errorConexion;
       } finally {
         botonEl.disabled = false;
-        botonEl.textContent = "Guardar cambios";
+        botonEl.textContent = t.guardarCambios;
       }
     }
 
@@ -705,7 +867,8 @@
 
     function aplicarTema(tema) {
       document.documentElement.setAttribute("data-tema", tema);
-      document.getElementById("boton-tema").textContent = tema === "oscuro" ? "☀️ Modo claro" : "🌙 Modo oscuro";
+      const t = traducciones[idiomaActual];
+      document.getElementById("boton-tema").textContent = tema === "oscuro" ? t.temaClaro : t.temaOscuro;
       localStorage.setItem("tema", tema);
     }
 
@@ -714,10 +877,66 @@
       aplicarTema(temaActual === "oscuro" ? "claro" : "oscuro");
     }
 
+    function aplicarIdioma(idioma) {
+      idiomaActual = idioma;
+      localStorage.setItem("idioma", idioma);
+      const t = traducciones[idioma];
+
+      document.getElementById("boton-cerrar-sesion").textContent = t.cerrarSesion;
+      document.getElementById("boton-idioma").textContent = t.botonIdioma;
+      document.getElementById("boton-mostrar-logo").textContent = t.logoNegocio;
+      document.getElementById("boton-subir-logo").textContent = t.subirLogo;
+      document.getElementById("titulo-fotos-menu").textContent = t.fotosMenu;
+      document.getElementById("boton-subir-foto").textContent = t.subirFoto;
+      document.getElementById("titulo-platos-menu").textContent = t.platosMenu;
+      document.getElementById("boton-agregar-plato").textContent = t.agregarPlato;
+      document.getElementById("boton-cancelar-plato").textContent = t.cancelar;
+      document.getElementById("titulo-form-editar").textContent = t.editarPerfil;
+      document.getElementById("boton-cancelar-perfil").textContent = t.cancelar;
+      document.getElementById("boton-guardar-plato").textContent = t.guardarPlato;
+      document.getElementById("boton-guardar-perfil").textContent = t.guardarCambios;
+      document.getElementById("titulo-form-plato").textContent = modoFormPlato === "editar" ? t.editarPlato : t.nuevoPlato;
+
+      document.getElementById("plato-nombre").placeholder = t.platoNombrePlaceholder;
+      document.getElementById("plato-descripcion").placeholder = t.platoDescripcionPlaceholder;
+      document.getElementById("plato-precio").placeholder = t.platoPrecioPlaceholder;
+      document.getElementById("editar-nombre").placeholder = t.nombreRestaurantePlaceholder;
+      document.getElementById("editar-descripcion").placeholder = t.descripcionPlaceholder;
+      document.getElementById("editar-direccion").placeholder = t.direccionPlaceholder;
+      document.getElementById("editar-telefono").placeholder = t.telefonoPlaceholder;
+      document.getElementById("editar-coords").placeholder = t.coordsPlaceholder;
+      document.getElementById("editar-tiktok").placeholder = t.tiktokPlaceholder;
+      document.getElementById("editar-instagram").placeholder = t.instagramPlaceholder;
+      document.getElementById("editar-facebook").placeholder = t.facebookPlaceholder;
+      document.getElementById("editar-contacto-email").placeholder = t.contactoEmailPlaceholder;
+
+      const selectCategoria = document.getElementById("editar-categoria");
+      Array.from(selectCategoria.options).forEach(opcion => {
+        opcion.textContent = idioma === "en" ? (categoriasEnIngles[opcion.value] || opcion.value) : opcion.value;
+      });
+
+      const temaActualAhora = document.documentElement.getAttribute("data-tema");
+      document.getElementById("boton-tema").textContent = temaActualAhora === "oscuro" ? t.temaClaro : t.temaOscuro;
+
+      if (miRestaurante) {
+        renderizarPerfil();
+      }
+    }
+
+    function cambiarIdioma() {
+      aplicarIdioma(idiomaActual === "es" ? "en" : "es");
+    }
+
     aplicarTema(localStorage.getItem("tema") || "claro");
+    aplicarIdioma(idiomaActual);
 
     cargarMiPerfil();
   </script>
+
+
+
+        
+
 
 </body>
 </html>

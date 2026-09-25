@@ -118,13 +118,11 @@
       position: relative;
       margin-bottom: 20px;
     }
+    
     #boton-tema {
       background: transparent;
       color: var(--texto);
       border: 1px solid var(--borde);
-      position: absolute;
-      top: 0;
-      right: 0;
     }
 
 
@@ -163,9 +161,12 @@
 </head>
 <body>
 
-      <div class="header-superior">
-    <button type="button" onclick="mostrarLogin()" style="background: transparent; color: var(--texto); border: 1px solid var(--borde); position: absolute; top: 0; left: 0; font-size: 13px; padding: 8px 12px;">🍽️ Restaurantes</button>
-    <button id="boton-tema" onclick="cambiarTema()">🌙 Modo oscuro</button>
+            <div class="header-superior">
+    <button type="button" id="boton-mostrar-login" onclick="mostrarLogin()" style="background: transparent; color: var(--texto); border: 1px solid var(--borde); position: absolute; top: 0; left: 0; font-size: 13px; padding: 8px 12px;">🍽️ Restaurantes</button>
+    <div style="position: absolute; top: 0; right: 0; display: flex; gap: 8px;">
+      <button id="boton-idioma" onclick="cambiarIdioma()">🌐 English</button>
+      <button id="boton-tema" onclick="cambiarTema()">🌙 Modo oscuro</button>
+    </div>
     <img src="logo.png" alt="GoFood" style="display: block; margin: 0 auto; max-height: 250px;">
   </div>
 
@@ -173,21 +174,23 @@
 
   <input type="text" id="buscar" placeholder="Buscá por nombre o tipo de comida..." onkeypress="if(event.key === 'Enter') buscar()">
     <div style="text-align: center;">
-    <button onclick="buscar()">Buscar</button>
+    <button id="boton-buscar" onclick="buscar()">Buscar</button>
   </div>
 
 
 
 <div id="filtros" style="display: none;">
+  
+
   <label style="display: inline-block; margin-top: 10px; font-weight: normal;">
     <input type="checkbox" id="solo-abiertos" checked onchange="buscar()" style="display: inline-block; width: auto; margin-right: 6px;">
-    Solo abiertos
+    <span id="texto-solo-abiertos">Solo abiertos</span>
   </label>
 
   <select id="orden-precio" onchange="buscar()" style="width: auto; display: inline-block; margin-left: 10px; padding: 8px;">
-    <option value="">Ordenar platos por precio</option>
-    <option value="asc">Precio: menor a mayor</option>
-    <option value="desc">Precio: mayor a menor</option>
+    <option value="" id="opcion-precio-default">Ordenar platos por precio</option>
+    <option value="asc" id="opcion-precio-asc">Precio: menor a mayor</option>
+    <option value="desc" id="opcion-precio-desc">Precio: mayor a menor</option>
   </select>
 
 <button type="button" id="boton-cercania" onclick="activarCercania()" style="margin-left: 10px;">📍 Ordenar por cercanía</button>
@@ -204,21 +207,121 @@
     <div id="login-restaurante" class="modal-fondo">
     <div class="modal-caja">
       <button type="button" class="modal-cerrar" onclick="mostrarLogin()">✕</button>
-      <h3>Iniciar sesión - Restaurantes</h3>
+      
+      <h3 id="titulo-login">Iniciar sesión - Restaurantes</h3>
       <input type="email" id="login-email" placeholder="Email" onkeypress="if(event.key === 'Enter') loginRestaurante()">
       <div class="fila-password">
         <input type="password" id="login-password" placeholder="Contraseña" onkeypress="if(event.key === 'Enter') loginRestaurante()">
         <button type="button" onclick="mostrarOcultarPassword()">👁</button>
       </div>
-      <button onclick="loginRestaurante()">Entrar</button>
+      <button id="boton-entrar-login" onclick="loginRestaurante()">Entrar</button>
+
+
       <p id="error-login"></p>
     </div>
   </div>
 
+  
+
   <script>
     const API_URL = "https://gofood-api-production.up.railway.app";
 
+    const traducciones = {
+      es: {
+        botonRestaurantes: "🍽️ Restaurantes",
+        botonIdioma: "🌐 English",
+        buscarPlaceholder: "Buscá por nombre o tipo de comida...",
+        botonBuscar: "Buscar",
+        soloAbiertos: "Solo abiertos",
+        ordenPrecioDefault: "Ordenar platos por precio",
+        ordenPrecioAsc: "Precio: menor a mayor",
+        ordenPrecioDesc: "Precio: mayor a menor",
+        botonCercania: "📍 Ordenar por cercanía",
+        botonCercaniaObteniendo: "📍 Obteniendo ubicación...",
+        botonCercaniaListo: "📍 Ordenado por cercanía ✓",
+        tituloAbiertos: "Restaurantes abiertos ahora",
+        sinAbiertos: "No hay restaurantes abiertos en este momento.",
+        errorConexion: "No se pudo conectar con la API.",
+        sinResultados: "No se encontraron resultados.",
+        abierto: "Abierto",
+        cerrado: "Cerrado",
+        en: "En",
+        tituloLogin: "Iniciar sesión - Restaurantes",
+        placeholderEmail: "Email",
+        placeholderPassword: "Contraseña",
+        botonEntrar: "Entrar",
+        errorLogin: "Email o contraseña incorrectos",
+        errorGeo: "Tu navegador no soporta geolocalización.",
+        errorGeoPermiso: "No se pudo obtener tu ubicación. Revisá los permisos del navegador.",
+        temaOscuro: "🌙 Modo oscuro",
+        temaClaro: "☀️ Modo claro"
+      },
+      en: {
+        botonRestaurantes: "🍽️ Restaurants",
+        botonIdioma: "🌐 Español",
+        buscarPlaceholder: "Search by name or type of food...",
+        botonBuscar: "Search",
+        soloAbiertos: "Open now only",
+        ordenPrecioDefault: "Sort dishes by price",
+        ordenPrecioAsc: "Price: low to high",
+        ordenPrecioDesc: "Price: high to low",
+        botonCercania: "📍 Sort by distance",
+        botonCercaniaObteniendo: "📍 Getting location...",
+        botonCercaniaListo: "📍 Sorted by distance ✓",
+        tituloAbiertos: "Open restaurants now",
+        sinAbiertos: "There are no open restaurants right now.",
+        errorConexion: "Could not connect to the API.",
+        sinResultados: "No results found.",
+        abierto: "Open",
+        cerrado: "Closed",
+        en: "At",
+        tituloLogin: "Log in - Restaurants",
+        placeholderEmail: "Email",
+        placeholderPassword: "Password",
+        botonEntrar: "Log in",
+        errorLogin: "Incorrect email or password",
+        errorGeo: "Your browser does not support geolocation.",
+        errorGeoPermiso: "Could not get your location. Check your browser permissions.",
+        temaOscuro: "🌙 Dark mode",
+        temaClaro: "☀️ Light mode"
+      }
+    };
+
+    let idiomaActual = localStorage.getItem("idioma") || "es";
+
+    function aplicarIdioma(idioma) {
+      idiomaActual = idioma;
+      localStorage.setItem("idioma", idioma);
+      const t = traducciones[idioma];
+
+      document.getElementById("boton-mostrar-login").textContent = t.botonRestaurantes;
+      document.getElementById("boton-idioma").textContent = t.botonIdioma;
+      document.getElementById("buscar").placeholder = t.buscarPlaceholder;
+      document.getElementById("boton-buscar").textContent = t.botonBuscar;
+      document.getElementById("texto-solo-abiertos").textContent = t.soloAbiertos;
+      document.getElementById("opcion-precio-default").textContent = t.ordenPrecioDefault;
+      document.getElementById("opcion-precio-asc").textContent = t.ordenPrecioAsc;
+      document.getElementById("opcion-precio-desc").textContent = t.ordenPrecioDesc;
+      document.getElementById("boton-cercania").textContent = t.botonCercania;
+      document.getElementById("titulo-abiertos").textContent = t.tituloAbiertos;
+      document.getElementById("titulo-login").textContent = t.tituloLogin;
+      document.getElementById("login-email").placeholder = t.placeholderEmail;
+      document.getElementById("login-password").placeholder = t.placeholderPassword;
+      document.getElementById("boton-entrar-login").textContent = t.botonEntrar;
+
+      const temaActualAhora = document.documentElement.getAttribute("data-tema");
+      document.getElementById("boton-tema").textContent = temaActualAhora === "oscuro" ? t.temaClaro : t.temaOscuro;
+
+      cargarAbiertos();
+      if (document.getElementById("buscar").value) buscar();
+    }
+
+    function cambiarIdioma() {
+      aplicarIdioma(idiomaActual === "es" ? "en" : "es");
+    }
+
     async function cargarAbiertos() {
+      const t = traducciones[idiomaActual];
       try {
         const response = await fetch(`${API_URL}/api/restaurants?openOnly=true`);
         const restaurantes = await response.json();
@@ -226,7 +329,7 @@
         const listaEl = document.getElementById("lista-abiertos");
 
         if (restaurantes.length === 0) {
-          listaEl.innerHTML = "<p>No hay restaurantes abiertos en este momento.</p>";
+          listaEl.innerHTML = `<p>${t.sinAbiertos}</p>`;
           return;
         }
 
@@ -234,13 +337,16 @@
         listaEl.innerHTML = restaurantes.map(r => `
           <div class="resultado">
                         <h3><a href="restaurante.html?id=${r.id}">${r.logoUrl ? `<img class="logo-mini" src="${r.logoUrl}">` : ""}${r.name}</a></h3>
-            <p>${r.address} — <span class="estado-abierto">Abierto</span></p>
+            <p>${r.address} — <span class="estado-abierto">${t.abierto}</span></p>
           </div>
         `).join("");
 
 
-      } catch (err) {
-        document.getElementById("lista-abiertos").innerHTML = "<p>No se pudo conectar con la API.</p>";
+    
+
+
+           } catch (err) {
+        document.getElementById("lista-abiertos").innerHTML = `<p>${t.errorConexion}</p>`;
       }
     }
 
@@ -251,15 +357,16 @@
 
     let ubicacionUsuario = null;
 
-    function activarCercania() {
+        function activarCercania() {
+      const t = traducciones[idiomaActual];
       const boton = document.getElementById("boton-cercania");
 
       if (!navigator.geolocation) {
-        alert("Tu navegador no soporta geolocalización.");
+        alert(t.errorGeo);
         return;
       }
 
-      boton.textContent = "📍 Obteniendo ubicación...";
+      boton.textContent = t.botonCercaniaObteniendo;
       boton.disabled = true;
 
       navigator.geolocation.getCurrentPosition(
@@ -268,13 +375,13 @@
             lat: posicion.coords.latitude,
             lng: posicion.coords.longitude
           };
-          boton.textContent = "📍 Ordenado por cercanía ✓";
+          boton.textContent = t.botonCercaniaListo;
           boton.disabled = false;
           buscar();
         },
         (error) => {
-          alert("No se pudo obtener tu ubicación. Revisá los permisos del navegador.");
-          boton.textContent = "📍 Ordenar por cercanía";
+          alert(t.errorGeoPermiso);
+          boton.textContent = t.botonCercania;
           boton.disabled = false;
         }
       );
@@ -285,7 +392,8 @@
 
 
 
-            async function buscar() {
+      async function buscar() {
+      const t = traducciones[idiomaActual];
       const q = document.getElementById("buscar").value;
       const resultadosEl = document.getElementById("resultados");
       resultadosEl.innerHTML = "";
@@ -314,8 +422,9 @@
       const response = await fetch(url);
       const data = await response.json();
 
+      
       if (data.restaurants.length === 0 && data.menuItems.length === 0) {
-        resultadosEl.innerHTML = "<p>No se encontraron resultados.</p>";
+        resultadosEl.innerHTML = `<p>${t.sinResultados}</p>`;
         return;
       }
 
@@ -324,7 +433,7 @@
         resultadosEl.innerHTML += `
           <div class="resultado">
             <h3><a href="restaurante.html?id=${r.id}">${r.logoUrl ? `<img class="logo-mini" src="${r.logoUrl}">` : ""}${r.name}</a></h3>
-            <p>${r.address} — ${r.isOpen ? "<span class='estado-abierto'>Abierto</span>" : "<span class='estado-cerrado'>Cerrado</span>"}</p>
+            <p>${r.address} — ${r.isOpen ? `<span class='estado-abierto'>${t.abierto}</span>` : `<span class='estado-cerrado'>${t.cerrado}</span>`}</p>
           </div>
         `;
       });
@@ -337,10 +446,13 @@
             <div class="resultado">
               <h3><a href="restaurante.html?id=${m.restaurantId}">${m.name} - $${m.price}</a></h3>
               <p>${m.description ?? ""}</p>
-                            <p><em style="color: var(--acento);">En: ${m.restaurantName}</em></p>
+                            <p><em style="color: var(--acento);">${t.en}: ${m.restaurantName}</em></p>
             </div>
           `;
         } else {
+
+
+
           resultadosEl.innerHTML += `
             <div class="resultado">
               <h3>${m.restaurantName}</h3>
@@ -374,8 +486,8 @@
           body: JSON.stringify({ email, password })
         });
 
-        if (!response.ok) {
-          errorEl.textContent = "Email o contraseña incorrectos";
+                if (!response.ok) {
+          errorEl.textContent = traducciones[idiomaActual].errorLogin;
           return;
         }
 
@@ -383,13 +495,14 @@
         sessionStorage.setItem("token", data.token);
         window.location.href = "panel-restaurante.html";
       } catch (err) {
-        errorEl.textContent = "No se pudo conectar con la API.";
+        errorEl.textContent = traducciones[idiomaActual].errorConexion;
       }
     }
 
-    function aplicarTema(tema) {
+        function aplicarTema(tema) {
       document.documentElement.setAttribute("data-tema", tema);
-      document.getElementById("boton-tema").textContent = tema === "oscuro" ? "☀️ Modo claro" : "🌙 Modo oscuro";
+      const t = traducciones[idiomaActual];
+      document.getElementById("boton-tema").textContent = tema === "oscuro" ? t.temaClaro : t.temaOscuro;
       localStorage.setItem("tema", tema);
     }
 
@@ -399,6 +512,7 @@
     }
 
     aplicarTema(localStorage.getItem("tema") || "claro");
+    aplicarIdioma(idiomaActual);
 
         function restaurarBusqueda() {
       const qGuardado = sessionStorage.getItem("busqueda-q");
@@ -412,7 +526,6 @@
       buscar();
     }
 
-    cargarAbiertos();
     setInterval(cargarAbiertos, 30000);
     restaurarBusqueda();
   </script>
