@@ -193,6 +193,48 @@
       color: var(--texto);
       padding: 0;
     }
+
+
+
+    .inicio-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 10px;
+    }
+    .tile {
+      border: 1px solid var(--borde);
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      background: var(--fondo);
+      text-align: center;
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+    .tile:hover { box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); }
+    .tile:active { transform: scale(0.97); }
+    .tile img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+    }
+    .tile span {
+      display: block;
+      padding: 10px 6px;
+      font-weight: bold;
+      font-size: 15px;
+      color: var(--acento);
+    }
+    @media (min-width: 560px) {
+      .inicio-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+
+
+
+
+
   </style>
 </head>
 <body>
@@ -210,14 +252,20 @@
 
     <input type="text" id="buscar" placeholder="Buscá por nombre o tipo de negocio..." onkeypress="if(event.key === 'Enter') buscar()">
     <div style="text-align: center;">
-    <button id="boton-buscar" onclick="buscar()">Buscar</button>
+        <button id="boton-buscar" onclick="buscar()">Buscar</button>
+  </div>
+
+  <div id="inicio" class="inicio-grid"></div>
+
+  <div id="boton-volver" style="display: none; margin: 15px 0 5px 0;">
+    <button type="button" id="texto-volver" onclick="volverAlInicio()">← Volver</button>
   </div>
 
 
 
 <div id="filtros" style="display: none; text-align: center;">
 
-    <select id="filtro-categoria" class="filtro-select" onchange="buscar()" style="width: auto; display: inline-block; margin-right: 10px;">
+    <select id="filtro-categoria" class="filtro-select" onchange="grupoActivo = null; buscar()" style="width: auto; display: inline-block; margin-right: 10px;">
     <option value="" id="opcion-categoria-default">Todos los negocios</option>
     <option value="Bodegas y Minimarkets">Bodegas y Minimarkets</option>
     <option value="Caucheras">Caucheras</option>
@@ -283,7 +331,49 @@
   
 
   <script>
-    const API_URL = "https://gofood-api-production.up.railway.app";
+        const API_URL = "https://gofood-api-production.up.railway.app";
+
+    // Cada cuadrado de la pantalla de inicio. "categorias" son los nombres EXACTOS que se guardan en la base de datos.
+    const GRUPOS = [
+      { id: "alimentacion", img: "alimentacion.jpg", es: "Alimentación", en: "Groceries", categorias: ["Bodegas y Minimarkets", "Supermercados"] },
+      { id: "licorerias", img: "licorerias.jpg", es: "Licorerías", en: "Liquor stores", categorias: ["Licorerías"] },
+      { id: "comida", img: "comida-express.jpg", es: "Comida exprés", en: "Fast food", categorias: ["Comida"] },
+      { id: "almuerzos", img: "almuerzos.jpg", es: "Almuerzos", en: "Lunch", categorias: ["Almuerzos"] },
+      { id: "salud", img: "asistencia-medica.jpg", es: "Asistencia médica", en: "Medical care", categorias: ["Clínicas", "Hospitales"] },
+      { id: "farmacias", img: "farmacias.jpg", es: "Farmacias", en: "Pharmacies", categorias: ["Farmacias"] },
+      { id: "veterinarias", img: "veterinarias.jpg", es: "Veterinarias", en: "Veterinarians", categorias: ["Veterinarias"] },
+      { id: "repuestos", img: "repuestos.jpg", es: "Repuestos", en: "Auto parts", categorias: ["Repuestos de Carro", "Repuestos de Moto", "Repuestos Línea Pesada"] },
+      { id: "talleres", img: "talleres.jpg", es: "Talleres", en: "Workshops", categorias: ["Talleres Mecánicos de Carro", "Talleres Mecánicos de Moto"] },
+      { id: "caucheras", img: "caucheras.jpg", es: "Caucheras", en: "Tire shops", categorias: ["Caucheras"] },
+      { id: "gasolina", img: "gasolina.jpg", es: "Gasolina", en: "Gas stations", categorias: ["Estaciones de Servicio"] },
+      { id: "gruas", img: "grua.jpg", es: "Grúas", en: "Tow trucks", categorias: ["Grúas"] }
+    ];
+
+    let grupoActivo = null;
+
+    function dibujarInicio() {
+      document.getElementById("inicio").innerHTML = GRUPOS.map(g => `
+        <div class="tile" role="button" tabindex="0" onclick="abrirGrupo('${g.id}')" onkeypress="if(event.key === 'Enter') abrirGrupo('${g.id}')">
+          <img src="categorias/${g.img}" alt="${g[idiomaActual]}">
+          <span>${g[idiomaActual]}</span>
+        </div>
+      `).join("");
+    }
+
+    function abrirGrupo(id) {
+      grupoActivo = id;
+      document.getElementById("buscar").value = "";
+      document.getElementById("filtro-categoria").value = "";
+      buscar();
+    }
+
+    function volverAlInicio() {
+      grupoActivo = null;
+      document.getElementById("buscar").value = "";
+      document.getElementById("filtro-categoria").value = "";
+      document.getElementById("resultados").innerHTML = "";
+      buscar();
+    }
 
     const traducciones = {
       es: {
@@ -301,6 +391,7 @@
                 categoriaDefault: "Todos los negocios",
         masFiltros: "Más filtros",
         escribiOElegi: "Escribí algo o elegí una categoría para buscar.",
+        volver: "← Volver",
 
         errorConexion: "No se pudo conectar con la API.",
         sinResultados: "No se encontraron resultados.",
@@ -332,6 +423,7 @@
                 categoriaDefault: "All businesses",
         masFiltros: "More filters",
         escribiOElegi: "Type something or choose a category to search.",
+        volver: "← Back",
         errorConexion: "Could not connect to the API.",
         sinResultados: "No results found.",
         abierto: "Open",
@@ -368,6 +460,8 @@
     
       document.getElementById("opcion-categoria-default").textContent = t.categoriaDefault;
       document.getElementById("texto-filtros-mas").textContent = t.masFiltros;
+      document.getElementById("texto-volver").textContent = t.volver;
+      dibujarInicio();
       document.getElementById("titulo-login").textContent = t.tituloLogin;
       document.getElementById("login-email").placeholder = t.placeholderEmail;
       document.getElementById("login-password").placeholder = t.placeholderPassword;
@@ -376,7 +470,7 @@
       const temaActualAhora = document.documentElement.getAttribute("data-tema");
       document.getElementById("boton-tema").textContent = temaActualAhora === "oscuro" ? t.temaClaro : t.temaOscuro;
 
-      if (document.getElementById("buscar").value || document.getElementById("filtro-categoria").value) buscar();
+      if (document.getElementById("buscar").value || document.getElementById("filtro-categoria").value || grupoActivo) buscar();
 
 
     }
@@ -435,21 +529,23 @@
           async function buscar() {
       const t = traducciones[idiomaActual];
       const q = document.getElementById("buscar").value;
-      const categoria = document.getElementById("filtro-categoria").value;
+      const grupo = GRUPOS.find(g => g.id === grupoActivo);
+      const categoria = grupo ? grupo.categorias.join(",") : document.getElementById("filtro-categoria").value;
       const resultadosEl = document.getElementById("resultados");
       resultadosEl.innerHTML = "";
 
       sessionStorage.setItem("busqueda-q", q);
       sessionStorage.setItem("busqueda-categoria", categoria);
+      sessionStorage.setItem("busqueda-grupo", grupoActivo || "");
       sessionStorage.setItem("busqueda-abiertos", document.getElementById("solo-abiertos").checked);
       sessionStorage.setItem("busqueda-precio", document.getElementById("orden-precio").value);
 
-      document.getElementById("filtros").style.display = "block";
+      const hayBusqueda = q || categoria;
+      document.getElementById("inicio").style.display = hayBusqueda ? "none" : "grid";
+      document.getElementById("boton-volver").style.display = hayBusqueda ? "block" : "none";
+      document.getElementById("filtros").style.display = hayBusqueda ? "block" : "none";
 
-      if (!q && !categoria) {
-        resultadosEl.innerHTML = `<p>${t.escribiOElegi}</p>`;
-        return;
-      }
+      if (!hayBusqueda) return;
 
       const soloAbiertos = document.getElementById("solo-abiertos").checked;
       const sortPrice = document.getElementById("orden-precio").value;
@@ -557,10 +653,12 @@
         function restaurarBusqueda() {
       const qGuardado = sessionStorage.getItem("busqueda-q");
       const categoriaGuardada = sessionStorage.getItem("busqueda-categoria");
-      if (!qGuardado && !categoriaGuardada) return;
+            const grupoGuardado = sessionStorage.getItem("busqueda-grupo");
+      if (!qGuardado && !categoriaGuardada && !grupoGuardado) return;
+      grupoActivo = grupoGuardado || null;
 
       document.getElementById("buscar").value = qGuardado || "";
-      document.getElementById("filtro-categoria").value = categoriaGuardada || "";
+            document.getElementById("filtro-categoria").value = grupoGuardado ? "" : (categoriaGuardada || "");
       document.getElementById("solo-abiertos").checked = sessionStorage.getItem("busqueda-abiertos") === "true";
       document.getElementById("orden-precio").value = sessionStorage.getItem("busqueda-precio") || "";
       buscar();
