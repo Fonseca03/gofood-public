@@ -198,36 +198,43 @@
 
     .inicio-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
+      grid-template-columns: 1fr;
+      gap: 10px;
       margin-top: 10px;
     }
+
+
+
     .tile {
+      display: flex;
+      align-items: center;
+      gap: 14px;
       border: 1px solid var(--borde);
-      border-radius: 12px;
+      border-radius: 14px;
       overflow: hidden;
       cursor: pointer;
       background: var(--fondo);
-      text-align: center;
       transition: transform 0.1s, box-shadow 0.1s;
     }
     .tile:hover { box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); }
-    .tile:active { transform: scale(0.97); }
+    .tile:active { transform: scale(0.98); }
     .tile img {
       display: block;
-      width: 100%;
-      aspect-ratio: 1 / 1;
+      width: 84px;
+      height: 84px;
+      flex-shrink: 0;
       object-fit: cover;
     }
     .tile span {
-      display: block;
-      padding: 10px 6px;
+      flex: 1;
+      padding: 10px 12px 10px 0;
       font-weight: bold;
-      font-size: 15px;
+      font-size: 17px;
       color: var(--acento);
+      text-align: left;
     }
     @media (min-width: 560px) {
-      .inicio-grid { grid-template-columns: repeat(3, 1fr); }
+      .inicio-grid { grid-template-columns: repeat(2, 1fr); }
     }
 
 
@@ -272,6 +279,23 @@
     <option value="Caucheras">Caucheras</option>
     <option value="Clínicas">Clínicas</option>
     <option value="Comida">Comida</option>
+    <option value="Arepas">Arepas</option>
+    <option value="Cachapas">Cachapas</option>
+    <option value="Cafeterías">Cafeterías</option>
+    <option value="Comida de Mar">Comida de Mar</option>
+    <option value="Ensaladas">Ensaladas</option>
+    <option value="Hamburguesas">Hamburguesas</option>
+    <option value="Helados">Helados</option>
+    <option value="Milanesas">Milanesas</option>
+    <option value="Parrillas">Parrillas</option>
+    <option value="Pasteles y Empanadas">Pasteles y Empanadas</option>
+    <option value="Perros Calientes">Perros Calientes</option>
+    <option value="Pizzas">Pizzas</option>
+    <option value="Pollo">Pollo</option>
+    <option value="Postres">Postres</option>
+    <option value="Shawarmas">Shawarmas</option>
+    <option value="Sushi">Sushi</option>
+    <option value="Tequeños">Tequeños</option>
     <option value="Entretenimiento">Entretenimiento</option>
     <option value="Estaciones de Servicio">Estaciones de Servicio</option>
     <option value="Farmacias">Farmacias</option>
@@ -339,7 +363,26 @@
     const GRUPOS = [
       { id: "alimentacion", img: "alimentacion.jpg", es: "Alimentación", en: "Groceries", categorias: ["Bodegas y Minimarkets", "Supermercados"] },
       { id: "licorerias", img: "licorerias.jpg", es: "Licorerías", en: "Liquor stores", categorias: ["Licorerías"] },
-      { id: "comida", img: "comida-express.jpg", es: "Comida exprés", en: "Fast food", categorias: ["Comida"] },
+      { id: "comida", img: "comida-express.jpg", es: "Comida exprés", en: "Fast food", subgrupos: [
+        { id: "hamburguesas", img: "comida/hamburguesas.jpg", es: "Hamburguesas", en: "Burgers", categorias: ["Hamburguesas"] },
+        { id: "pizzas", img: "comida/pizzas.jpg", es: "Pizzas", en: "Pizza", categorias: ["Pizzas"] },
+        { id: "perros", img: "comida/perros-calientes.jpg", es: "Perros calientes", en: "Hot dogs", categorias: ["Perros Calientes"] },
+        { id: "arepas", img: "comida/arepas.jpg", es: "Arepas", en: "Arepas", categorias: ["Arepas"] },
+        { id: "tequenos", img: "comida/tequenos.jpg", es: "Tequeños", en: "Tequeños", categorias: ["Tequeños"] },
+        { id: "pasteles", img: "comida/pasteles-empanadas.jpg", es: "Pasteles y empanadas", en: "Pastries & empanadas", categorias: ["Pasteles y Empanadas"] },
+        { id: "postres", img: "comida/postres.jpg", es: "Postres", en: "Desserts", categorias: ["Postres"] },
+        { id: "pollo", img: "comida/pollo.jpg", es: "Pollo", en: "Chicken", categorias: ["Pollo"] },
+        { id: "sushi", img: "comida/sushi.jpg", es: "Sushi", en: "Sushi", categorias: ["Sushi"] },
+        { id: "cachapas", img: "comida/cachapas.jpg", es: "Cachapas", en: "Cachapas", categorias: ["Cachapas"] },
+        { id: "cafeterias", img: "comida/cafeterias.jpg", es: "Cafeterías", en: "Cafés", categorias: ["Cafeterías"] },
+        { id: "helados", img: "comida/helados.jpg", es: "Helados", en: "Ice cream", categorias: ["Helados"] },
+        { id: "parrillas", img: "comida/parrillas.jpg", es: "Parrillas", en: "Grill", categorias: ["Parrillas"] },
+        { id: "milanesas", img: "comida/milanesas.jpg", es: "Milanesas", en: "Milanesas", categorias: ["Milanesas"] },
+        { id: "mar", img: "comida/comida-de-mar.jpg", es: "Comida de mar", en: "Seafood", categorias: ["Comida de Mar"] },
+        { id: "ensaladas", img: "comida/ensaladas.jpg", es: "Ensaladas", en: "Salads", categorias: ["Ensaladas"] },
+        { id: "shawarmas", img: "comida/shawarmas.jpg", es: "Shawarmas", en: "Shawarmas", categorias: ["Shawarmas"] },
+        { id: "comida-otros", img: "comida/otros.jpg", es: "Otros", en: "Other", categorias: ["Comida"] }
+      ] },
       { id: "almuerzos", img: "almuerzos.jpg", es: "Almuerzos", en: "Lunch", categorias: ["Almuerzos"] },
       { id: "salud", img: "asistencia-medica.jpg", es: "Asistencia médica", en: "Medical care", categorias: ["Clínicas", "Hospitales"] },
       { id: "farmacias", img: "farmacias.jpg", es: "Farmacias", en: "Pharmacies", categorias: ["Farmacias"] },
@@ -351,10 +394,35 @@
       { id: "gruas", img: "grua.jpg", es: "Grúas", en: "Tow trucks", categorias: ["Grúas"] }
     ];
 
-    let grupoActivo = null;
+
+
+
+
+
+       let grupoActivo = null;   // grupo cuyos negocios se están mostrando
+    let menuActual = null;    // grupo cuyos cuadritos (subgrupos) se están mostrando
+
+    // Busca un grupo o subgrupo por su id
+    function obtenerGrupo(id) {
+      for (const g of GRUPOS) {
+        if (g.id === id) return g;
+        if (g.subgrupos) {
+          const sub = g.subgrupos.find(s => s.id === id);
+          if (sub) return sub;
+        }
+      }
+      return null;
+    }
+
+    // Devuelve el grupo "padre" de un subgrupo (o null si es un grupo normal)
+    function padreDe(id) {
+      return GRUPOS.find(g => g.subgrupos && g.subgrupos.some(s => s.id === id)) || null;
+    }
 
     function dibujarInicio() {
-      document.getElementById("inicio").innerHTML = GRUPOS.map(g => `
+      const padre = menuActual ? GRUPOS.find(g => g.id === menuActual) : null;
+      const lista = padre ? padre.subgrupos : GRUPOS;
+      document.getElementById("inicio").innerHTML = lista.map(g => `
         <div class="tile" role="button" tabindex="0" onclick="abrirGrupo('${g.id}')" onkeypress="if(event.key === 'Enter') abrirGrupo('${g.id}')">
           <img src="categorias/${g.img}" alt="${g[idiomaActual]}">
           <span>${g[idiomaActual]}</span>
@@ -363,21 +431,32 @@
     }
 
     function abrirGrupo(id) {
-      grupoActivo = id;
+      const g = obtenerGrupo(id);
+      if (!g) return;
       document.getElementById("buscar").value = "";
       document.getElementById("filtro-categoria").value = "";
+      if (g.subgrupos) {
+        menuActual = g.id;
+        grupoActivo = null;
+        dibujarInicio();
+      } else {
+        grupoActivo = id;
+      }
+      window.scrollTo(0, 0);
       buscar();
     }
 
     function volverAlInicio() {
+      const padre = grupoActivo ? padreDe(grupoActivo) : null;
+      menuActual = padre ? padre.id : null;
       grupoActivo = null;
       document.getElementById("buscar").value = "";
       document.getElementById("filtro-categoria").value = "";
       document.getElementById("resultados").innerHTML = "";
+      dibujarInicio();
       buscar();
     }
-
-    const traducciones = {
+     const traducciones = {
       es: {
         botonRestaurantes: "🍽️ Restaurantes",
         botonIdioma: "🌐 English",
@@ -531,7 +610,7 @@
           async function buscar() {
       const t = traducciones[idiomaActual];
       const q = document.getElementById("buscar").value;
-      const grupo = GRUPOS.find(g => g.id === grupoActivo);
+      const grupo = obtenerGrupo(grupoActivo);
       const categoria = grupo ? grupo.categorias.join(",") : document.getElementById("filtro-categoria").value;
       const resultadosEl = document.getElementById("resultados");
       resultadosEl.innerHTML = "";
@@ -544,7 +623,7 @@
 
       const hayBusqueda = q || categoria;
       document.getElementById("inicio").style.display = hayBusqueda ? "none" : "grid";
-      document.getElementById("boton-volver").style.display = hayBusqueda ? "block" : "none";
+      document.getElementById("boton-volver").style.display = (hayBusqueda || menuActual) ? "block" : "none";
       document.getElementById("filtros").style.display = hayBusqueda ? "block" : "none";
 
       if (!hayBusqueda) return;
