@@ -305,7 +305,9 @@
     <select id="filtro-categoria" class="filtro-select" onchange="grupoActivo = null; buscar()" style="width: auto; display: inline-block; margin-right: 10px;">
     <option value="" id="opcion-categoria-default">Todos los negocios</option>
     <option value="Almuerzos">Almuerzos</option>
-    <option value="Bodegas y Minimarkets">Bodegas y Minimarkets</option>
+        <option value="Bodegas y Minimarkets">Bodegas y Minimarkets</option>
+    <option value="Bodegas">Bodegas</option>
+    <option value="Minimercados">Minimercados</option>
     <option value="Caucheras">Caucheras</option>
     <option value="Clínicas">Clínicas</option>
     <option value="Comida Rápida">Comida Rápida</option>
@@ -391,7 +393,11 @@
 
     // Cada cuadrado de la pantalla de inicio. "categorias" son los nombres EXACTOS que se guardan en la base de datos.
     const GRUPOS = [
-      { id: "alimentacion", img: "alimentacion.jpg", es: "Alimentación", en: "Groceries", categorias: ["Bodegas y Minimarkets", "Supermercados"] },
+            { id: "alimentacion", img: "alimentacion.jpg", es: "Alimentación", en: "Groceries", subgrupos: [
+        { id: "supermercados", img: "alimentacion/supermercados.png", es: "Supermercados", en: "Supermarkets", categorias: ["Supermercados"] },
+        { id: "minimercados", img: "alimentacion/minimercados.png", es: "Minimercados", en: "Mini-markets", categorias: ["Minimercados"] },
+        { id: "bodegas", img: "alimentacion/bodegas.png", es: "Bodegas", en: "Corner stores", categorias: ["Bodegas", "Bodegas y Minimarkets"] }
+      ] },
       { id: "licorerias", img: "licorerias.jpg", es: "Licorerías", en: "Liquor stores", categorias: ["Licorerías"] },
             { id: "comida", img: "comida-express.jpg", es: "Comida Rápida", en: "Fast food", subgrupos: [
         { id: "hamburguesas", img: "comida/hamburguesas.jpg", es: "Hamburguesas", en: "Burgers", categorias: ["Hamburguesas"] },
