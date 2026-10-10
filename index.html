@@ -241,16 +241,46 @@
 
 
 
-
+    .barra-botones {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .botones-derecha {
+      display: flex;
+      gap: 6px;
+      margin-left: auto;
+    }
+    .barra-botones button {
+      background: transparent;
+      color: var(--texto);
+      border: 1px solid var(--borde);
+      font-size: 12px;
+      padding: 7px 9px;
+    }
+    .barra-botones.en-app {
+      justify-content: center;
+      margin: 30px 0 20px 0;
+      padding-top: 15px;
+      border-top: 1px solid var(--borde);
+    }
+    .barra-botones.en-app .botones-derecha {
+      margin-left: 0;
+    }
   </style>
 </head>
 <body>
 
-            <div class="header-superior">
-    <button type="button" id="boton-mostrar-login" onclick="mostrarLogin()" style="background: transparent; color: var(--texto); border: 1px solid var(--borde); position: absolute; top: 0; left: 0; font-size: 13px; padding: 8px 12px;">🍽️ Restaurantes</button>
-    <div style="position: absolute; top: 0; right: 0; display: flex; gap: 8px;">
-      <button id="boton-idioma" onclick="cambiarIdioma()">🌐 English</button>
-      <button id="boton-tema" onclick="cambiarTema()">🌙 Modo oscuro</button>
+    <div class="header-superior">
+    <div class="barra-botones">
+      <button type="button" id="boton-mostrar-login" onclick="mostrarLogin()">🍽️ Restaurantes</button>
+      <div class="botones-derecha">
+        <button id="boton-idioma" onclick="cambiarIdioma()">🌐 English</button>
+        <button id="boton-tema" onclick="cambiarTema()">🌙 Modo oscuro</button>
+      </div>
     </div>
     <img src="logo.png" alt="GoFood" style="display: block; margin: 0 auto; max-height: 250px;">
   </div>
@@ -363,7 +393,7 @@
     const GRUPOS = [
       { id: "alimentacion", img: "alimentacion.jpg", es: "Alimentación", en: "Groceries", categorias: ["Bodegas y Minimarkets", "Supermercados"] },
       { id: "licorerias", img: "licorerias.jpg", es: "Licorerías", en: "Liquor stores", categorias: ["Licorerías"] },
-      { id: "comida", img: "comida-express.jpg", es: "Comida exprés", en: "Fast food", subgrupos: [
+            { id: "comida", img: "comida-express.jpg", es: "Comida Rápida", en: "Fast food", subgrupos: [
         { id: "hamburguesas", img: "comida/hamburguesas.jpg", es: "Hamburguesas", en: "Burgers", categorias: ["Hamburguesas"] },
         { id: "pizzas", img: "comida/pizzas.jpg", es: "Pizzas", en: "Pizza", categorias: ["Pizzas"] },
         { id: "perros", img: "comida/perros-calientes.jpg", es: "Perros calientes", en: "Hot dogs", categorias: ["Perros Calientes"] },
@@ -745,7 +775,15 @@
       buscar();
     }
 
-    
+        // En la app (APK) la barra de botones va abajo; en la web va arriba.
+    // Para probarlo en el navegador, abrí la página con ?app=1 al final de la dirección.
+    const esApp = (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform())
+      || window.location.search.includes("app=1");
+    if (esApp) {
+      const barra = document.querySelector(".barra-botones");
+      barra.classList.add("en-app");
+      document.body.appendChild(barra);
+    }
     restaurarBusqueda();
   </script>
 
