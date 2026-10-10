@@ -270,6 +270,20 @@
     .barra-botones.en-app .botones-derecha {
       margin-left: 0;
     }
+    .chip {
+      background: transparent;
+      color: var(--acento);
+      border: 2px solid var(--acento);
+      border-radius: 20px;
+      padding: 6px 14px;
+      margin: 3px;
+      font-size: 14px;
+      box-shadow: none;
+    }
+    .chip.activo {
+      background: var(--acento);
+      color: var(--acento-texto);
+    }
   </style>
 </head>
 <body>
@@ -300,6 +314,8 @@
 
 
 
+<div id="chips-filtro" style="display: none; text-align: center; margin: 12px 0;"></div>
+
 <div id="filtros" style="display: none; text-align: center;">
 
     <select id="filtro-categoria" class="filtro-select" onchange="grupoActivo = null; buscar()" style="width: auto; display: inline-block; margin-right: 10px;">
@@ -310,6 +326,10 @@
     <option value="Minimercados">Minimercados</option>
     <option value="Caucheras">Caucheras</option>
     <option value="Clínicas">Clínicas</option>
+    <option value="Ambulancias">Ambulancias</option>
+    <option value="Consultorios Privados">Consultorios Privados</option>
+    <option value="Laboratorios">Laboratorios</option>
+    <option value="Odontología">Odontología</option>
     <option value="Comida Rápida">Comida Rápida</option>
     <option value="Arepas">Arepas</option>
     <option value="Cachapas">Cachapas</option>
@@ -399,7 +419,7 @@
         { id: "bodegas", img: "alimentacion/bodegas.png", es: "Bodegas", en: "Corner stores", categorias: ["Bodegas", "Bodegas y Minimarkets"] }
       ] },
       { id: "licorerias", img: "licorerias.jpg", es: "Licorerías", en: "Liquor stores", categorias: ["Licorerías"] },
-            { id: "comida", img: "comida-express.jpg", es: "Comida Rápida", en: "Fast food", subgrupos: [
+        { id: "comida", img: "comida-express.jpg", es: "Comida Rápida", en: "Fast food", subgrupos: [
         { id: "hamburguesas", img: "comida/hamburguesas.jpg", es: "Hamburguesas", en: "Burgers", categorias: ["Hamburguesas"] },
         { id: "pizzas", img: "comida/pizzas.jpg", es: "Pizzas", en: "Pizza", categorias: ["Pizzas"] },
         { id: "perros", img: "comida/perros-calientes.jpg", es: "Perros calientes", en: "Hot dogs", categorias: ["Perros Calientes"] },
@@ -407,20 +427,42 @@
         { id: "tequenos", img: "comida/tequenos.jpg", es: "Tequeños", en: "Tequeños", categorias: ["Tequeños"] },
         { id: "pasteles", img: "comida/pasteles-empanadas.jpg", es: "Pasteles y empanadas", en: "Pastries & empanadas", categorias: ["Pasteles y Empanadas"] },
         { id: "postres", img: "comida/postres.jpg", es: "Postres", en: "Desserts", categorias: ["Postres"] },
-        { id: "pollo", img: "comida/pollo.jpg", es: "Pollo", en: "Chicken", categorias: ["Pollo"] },
         { id: "sushi", img: "comida/sushi.jpg", es: "Sushi", en: "Sushi", categorias: ["Sushi"] },
         { id: "cachapas", img: "comida/cachapas.jpg", es: "Cachapas", en: "Cachapas", categorias: ["Cachapas"] },
         { id: "cafeterias", img: "comida/cafeterias.jpg", es: "Cafeterías", en: "Cafés", categorias: ["Cafeterías"] },
         { id: "helados", img: "comida/helados.jpg", es: "Helados", en: "Ice cream", categorias: ["Helados"] },
-        { id: "parrillas", img: "comida/parrillas.jpg", es: "Parrillas", en: "Grill", categorias: ["Parrillas"] },
-        { id: "milanesas", img: "comida/milanesas.jpg", es: "Milanesas", en: "Milanesas", categorias: ["Milanesas"] },
-        { id: "mar", img: "comida/comida-de-mar.jpg", es: "Comida de mar", en: "Seafood", categorias: ["Comida de Mar"] },
-        { id: "ensaladas", img: "comida/ensaladas.jpg", es: "Ensaladas", en: "Salads", categorias: ["Ensaladas"] },
         { id: "shawarmas", img: "comida/shawarmas.jpg", es: "Shawarmas", en: "Shawarmas", categorias: ["Shawarmas"] },
         { id: "comida-otros", img: "comida/otros.jpg", es: "Otros", en: "Other", categorias: ["Comida Rápida", "Comida Rapida", "Comida"] }
       ] },
-      { id: "almuerzos", img: "almuerzos.jpg", es: "Almuerzos", en: "Lunch", categorias: ["Almuerzos"] },
-      { id: "salud", img: "asistencia-medica.jpg", es: "Asistencia médica", en: "Medical care", categorias: ["Clínicas", "Hospitales"] },
+      {   id: "almuerzos", img: "almuerzos.jpg", es: "Almuerzos", en: "Lunch", subgrupos: [
+        { id: "pabellon", img: "almuerzos/pabellon-criollo.jpg", es: "Pabellón criollo", en: "Pabellón criollo", categorias: ["Pabellón Criollo"] },
+        { id: "bandeja-paisa", img: "almuerzos/bandeja-paisa.jpg", es: "Bandeja paisa", en: "Bandeja paisa", categorias: ["Bandeja Paisa"] },
+        { id: "arroz-con-pollo", img: "almuerzos/arroz-con-pollo.jpg", es: "Arroz con pollo", en: "Chicken & rice", categorias: ["Arroz con Pollo"] },
+        { id: "pollo", img: "almuerzos/pollo.jpg", es: "Pollo", en: "Chicken", categorias: ["Pollo"] },
+        { id: "pollo-horno", img: "almuerzos/pollo-al-horno.jpg", es: "Pollo al horno", en: "Roast chicken", categorias: ["Pollo al Horno"] },
+        { id: "milanesas", img: "almuerzos/milanesa-de-pollo.jpg", es: "Milanesas", en: "Milanesas", categorias: ["Milanesas"] },
+        { id: "chuleta", img: "almuerzos/chuleta-cerdo.jpg", es: "Chuleta de cerdo", en: "Pork chop", categorias: ["Chuleta de Cerdo"] },
+        { id: "parrillas", img: "almuerzos/parrillas.jpg", es: "Parrillas", en: "Grill", categorias: ["Parrillas"] },
+        { id: "pastas", img: "almuerzos/pastas.jpg", es: "Pastas", en: "Pasta", categorias: ["Pastas"] },
+        { id: "pasticho", img: "almuerzos/pasticho.jpg", es: "Pasticho", en: "Lasagna", categorias: ["Pasticho"] },
+        { id: "comida-china", img: "almuerzos/comida-china.jpg", es: "Comida china", en: "Chinese food", categorias: ["Comida China"] },
+        { id: "mar", img: "almuerzos/comida-de-mar.jpg", es: "Comida de mar", en: "Seafood", categorias: ["Comida de Mar"] },
+        { id: "ensaladas", img: "almuerzos/ensaladas.jpg", es: "Ensaladas", en: "Salads", categorias: ["Ensaladas"] },
+        { id: "sopas", img: "almuerzos/sopas.jpg", es: "Sopas", en: "Soups", categorias: ["Sopas"], filtros: [
+          { es: "Hervido", en: "Hervido", q: "hervido" },
+          { es: "Mondongo", en: "Mondongo", q: "mondongo" },
+          { es: "Sancocho", en: "Sancocho", q: "sancocho" }
+        ] },
+                { id: "almuerzos-otros", img: "almuerzos/otros.jpg", es: "Otros almuerzos", en: "Other lunches", categorias: ["Almuerzos"] }
+      ] },
+            { id: "salud", img: "asistencia-medica.jpg", es: "Asistencia médica", en: "Medical care", subgrupos: [
+        { id: "hospitales", img: "asistenciamedica/hospitales.jpg", es: "Hospitales", en: "Hospitals", categorias: ["Hospitales"] },
+        { id: "clinicas", img: "asistenciamedica/clinicas.jpg", es: "Clínicas", en: "Clinics", categorias: ["Clínicas"] },
+        { id: "consultorios", img: "asistenciamedica/consultorios-privados.jpg", es: "Consultorios privados", en: "Private practices", categorias: ["Consultorios Privados"] },
+        { id: "laboratorios", img: "asistenciamedica/laboratorios.jpg", es: "Laboratorios", en: "Laboratories", categorias: ["Laboratorios"] },
+        { id: "odontologia", img: "asistenciamedica/odontologia.jpg", es: "Odontología", en: "Dentists", categorias: ["Odontología"] },
+        { id: "ambulancias", img: "asistenciamedica/ambulancias.jpg", es: "Ambulancias", en: "Ambulances", categorias: ["Ambulancias"] }
+      ] },
       { id: "farmacias", img: "farmacias.jpg", es: "Farmacias", en: "Pharmacies", categorias: ["Farmacias"] },
       { id: "veterinarias", img: "veterinarias.jpg", es: "Veterinarias", en: "Veterinarians", categorias: ["Veterinarias"] },
       { id: "repuestos", img: "repuestos.jpg", es: "Repuestos", en: "Auto parts", categorias: ["Repuestos de Carro", "Repuestos de Moto", "Repuestos Línea Pesada"] },
@@ -437,6 +479,28 @@
 
        let grupoActivo = null;   // grupo cuyos negocios se están mostrando
     let menuActual = null;    // grupo cuyos cuadritos (subgrupos) se están mostrando
+
+    let filtroActivo = null;  // botoncito elegido dentro de un grupo (ej: mondongo)
+
+    function dibujarChips() {
+      const cont = document.getElementById("chips-filtro");
+      const grupo = obtenerGrupo(grupoActivo);
+      if (!grupo || !grupo.filtros) {
+        cont.style.display = "none";
+        cont.innerHTML = "";
+        return;
+      }
+      const todos = { es: "Todas", en: "All", q: "" };
+      cont.innerHTML = [todos, ...grupo.filtros].map(f =>
+        `<button type="button" class="chip ${(filtroActivo || "") === f.q ? "activo" : ""}" onclick="elegirFiltro('${f.q}')">${f[idiomaActual]}</button>`
+      ).join("");
+      cont.style.display = "block";
+    }
+
+    function elegirFiltro(q) {
+      filtroActivo = q || null;
+      buscar();
+    }
 
     // Busca un grupo o subgrupo por su id
     function obtenerGrupo(id) {
@@ -476,7 +540,8 @@
         grupoActivo = null;
         dibujarInicio();
       } else {
-        grupoActivo = id;
+          grupoActivo = id;
+          filtroActivo = null;
       }
       window.scrollTo(0, 0);
       buscar();
@@ -485,6 +550,7 @@
     function volverAlInicio() {
       const padre = grupoActivo ? padreDe(grupoActivo) : null;
       menuActual = padre ? padre.id : null;
+      filtroActivo = null;
       grupoActivo = null;
       document.getElementById("buscar").value = "";
       document.getElementById("filtro-categoria").value = "";
@@ -645,13 +711,17 @@
 
           async function buscar() {
       const t = traducciones[idiomaActual];
-      const q = document.getElementById("buscar").value;
+            const qEscrita = document.getElementById("buscar").value;
       const grupo = obtenerGrupo(grupoActivo);
-      const categoria = grupo ? grupo.categorias.join(",") : document.getElementById("filtro-categoria").value;
+      const usaFiltro = grupo && grupo.filtros && filtroActivo;
+      const q = usaFiltro ? filtroActivo : qEscrita;
+      const categoria = usaFiltro ? "" : (grupo ? grupo.categorias.join(",") : document.getElementById("filtro-categoria").value);
+      dibujarChips();
       const resultadosEl = document.getElementById("resultados");
       resultadosEl.innerHTML = "";
 
-      sessionStorage.setItem("busqueda-q", q);
+            sessionStorage.setItem("busqueda-q", qEscrita);
+      sessionStorage.setItem("busqueda-filtro", filtroActivo || "");
       sessionStorage.setItem("busqueda-categoria", categoria);
       sessionStorage.setItem("busqueda-grupo", grupoActivo || "");
       sessionStorage.setItem("busqueda-abiertos", document.getElementById("solo-abiertos").checked);
@@ -773,6 +843,8 @@
             const grupoGuardado = sessionStorage.getItem("busqueda-grupo");
       if (!qGuardado && !categoriaGuardada && !grupoGuardado) return;
       grupoActivo = grupoGuardado || null;
+
+      filtroActivo = sessionStorage.getItem("busqueda-filtro") || null;
 
       document.getElementById("buscar").value = qGuardado || "";
             document.getElementById("filtro-categoria").value = grupoGuardado ? "" : (categoriaGuardada || "");
