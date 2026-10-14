@@ -2,14 +2,14 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>GoFood</title>
+  <title>Ubik</title>
   <style>
         :root {
       --fondo: #FAF6EF;
       --texto: #2A2420;
-      --acento: #FF8000;
-      --acento-claro: #FFA01A;
-      --acento-oscuro: #E66800;
+            --acento: #1A7F90;
+      --acento-claro: #2A9DAE;
+      --acento-oscuro: #0F6577;
       --acento-texto: #FFFFFF;
       --abierto: #96E600;
       --cerrado: #A13D3D;
@@ -18,9 +18,9 @@
     [data-tema="oscuro"] {
       --fondo: #121212;
       --texto: #EFEFEF;
-      --acento: #FFA01A;
-      --acento-claro: #FFB84D;
-      --acento-oscuro: #FF8000;
+            --acento: #3FBFD0;
+      --acento-claro: #6AD3E0;
+      --acento-oscuro: #2AA3B5;
       --acento-texto: #121212;
       --abierto: #96E600;
       --cerrado: #C97070;
@@ -284,6 +284,90 @@
       background: var(--acento);
       color: var(--acento-texto);
     }
+/* ===== Pantalla de inicio con mapa ===== */
+    #mapa-inicio {
+      position: relative;
+      width: 100%;
+      height: calc(100svh - 300px);
+      min-height: 440px;
+      max-height: 760px;
+      margin-top: 8px;
+      border-radius: 16px;
+      overflow: hidden;
+      background: url(mapa/fondo.jpg) center / cover no-repeat;
+    }
+    .header-superior { margin-bottom: 6px; }
+    .punto {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      cursor: pointer;
+      transform: translateY(-50%);
+      max-width: 46%;
+    }
+    .punto img { width: 24px; height: auto; flex-shrink: 0; filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.4)); }
+    .punto span {
+      background: rgba(255, 255, 255, 0.9);
+      color: #12324f;
+      font-weight: 800;
+      font-size: 12px;
+      line-height: 1.1;
+      padding: 3px 7px;
+      border-radius: 9px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    }
+    .punto.grande img { width: 32px; }
+    .punto.grande span { font-size: 14px; }
+    .punto:active { transform: translateY(-50%) scale(0.95); }
+    .tile-ico {
+      width: 84px;
+      height: 84px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 38px;
+      background: var(--borde);
+    }
+
+    /* ===== Menú ☰ ===== */
+    .fila-logo { position: relative; }
+    #boton-menu {
+      position: absolute;
+      top: 22px;
+      right: 0;
+      z-index: 20;
+      background: transparent;
+      color: var(--texto);
+      border: 1px solid var(--borde);
+      font-size: 16px;
+      padding: 7px 12px;
+    }
+    #menu-info {
+      display: none;
+      position: absolute;
+      top: 64px;
+      right: 0;
+      z-index: 30;
+      min-width: 240px;
+      background: var(--fondo);
+      border: 1px solid var(--borde);
+      border-radius: 12px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+      padding: 6px;
+    }
+    #menu-info a {
+      display: block;
+      padding: 12px 14px;
+      color: var(--texto);
+      font-weight: bold;
+      font-size: 15px;
+      text-decoration: none;
+      border-radius: 8px;
+    }
+    #menu-info a:hover { background: var(--borde); }
+
   </style>
 </head>
 <body>
@@ -296,16 +380,21 @@
         <button id="boton-tema" onclick="cambiarTema()">🌙 Modo oscuro</button>
       </div>
     </div>
-    <img src="logo.png" alt="GoFood" style="display: block; margin: 0 auto; max-height: 250px;">
+    <div class="fila-logo">
+      <img src="mapa/logo-ubik.png" alt="Ubik" style="display: block; margin: 0 auto; max-height: 80px;">
+      <button type="button" id="boton-menu" onclick="toggleMenu(event)">☰</button>
+      <div id="menu-info"></div>
+    </div>
   </div>
 
 
 
-    <input type="text" id="buscar" placeholder="Buscá por nombre o tipo de negocio..." onkeypress="if(event.key === 'Enter') buscar()">
+    <input type="text" id="buscar" style="display: none;" placeholder="Buscá por nombre o tipo de negocio..." onkeypress="if(event.key === 'Enter') buscar()">
     <div style="text-align: center;">
-        <button id="boton-buscar" onclick="buscar()">Buscar</button>
+        <button id="boton-buscar" onclick="clicBuscar()">Buscar</button>
   </div>
 
+  <div id="mapa-inicio"></div>
   <div id="inicio" class="inicio-grid"></div>
 
   <div id="boton-volver" style="display: none; margin: 15px 0 5px 0;">
@@ -356,7 +445,7 @@
     <option value="Licorerías">Licorerías</option>
     <option value="Repuestos de Carro">Repuestos de Carro</option>
     <option value="Repuestos de Moto">Repuestos de Moto</option>
-    <option value="Repuestos Línea Pesada">Repuestos Línea Pesada</option>
+    <option value="Otros Repuestos">Otros Repuestos</option>
     <option value="Supermercados">Supermercados</option>
     <option value="Talleres Mecánicos de Carro">Talleres Mecánicos de Carro</option>
     <option value="Talleres Mecánicos de Moto">Talleres Mecánicos de Moto</option>
@@ -409,17 +498,11 @@
   
 
   <script>
-        const API_URL = "https://gofood-api-production.up.railway.app";
+    const API_URL = "https://gofood-api-production.up.railway.app";
 
-    // Cada cuadrado de la pantalla de inicio. "categorias" son los nombres EXACTOS que se guardan en la base de datos.
-    const GRUPOS = [
-            { id: "alimentacion", img: "alimentacion.jpg", es: "Alimentación", en: "Groceries", subgrupos: [
-        { id: "supermercados", img: "alimentacion/supermercados.png", es: "Supermercados", en: "Supermarkets", categorias: ["Supermercados"] },
-        { id: "minimercados", img: "alimentacion/minimercados.png", es: "Minimercados", en: "Mini-markets", categorias: ["Minimercados"] },
-        { id: "bodegas", img: "alimentacion/bodegas.png", es: "Bodegas", en: "Corner stores", categorias: ["Bodegas", "Bodegas y Minimarkets"] }
-      ] },
-      { id: "licorerias", img: "licorerias.jpg", es: "Licorerías", en: "Liquor stores", categorias: ["Licorerías"] },
-        { id: "comida", img: "comida-express.jpg", es: "Comida Rápida", en: "Fast food", subgrupos: [
+
+        const GRUPOS = [
+      { id: "comida", es: "Comida rápida", en: "Fast food", x: 2, y: 6, grande: true, subgrupos: [
         { id: "hamburguesas", img: "comida/hamburguesas.jpg", es: "Hamburguesas", en: "Burgers", categorias: ["Hamburguesas"] },
         { id: "pizzas", img: "comida/pizzas.jpg", es: "Pizzas", en: "Pizza", categorias: ["Pizzas"] },
         { id: "perros", img: "comida/perros-calientes.jpg", es: "Perros calientes", en: "Hot dogs", categorias: ["Perros Calientes"] },
@@ -434,7 +517,7 @@
         { id: "shawarmas", img: "comida/shawarmas.jpg", es: "Shawarmas", en: "Shawarmas", categorias: ["Shawarmas"] },
         { id: "comida-otros", img: "comida/otros.jpg", es: "Otros", en: "Other", categorias: ["Comida Rápida", "Comida Rapida", "Comida"] }
       ] },
-      {   id: "almuerzos", img: "almuerzos.jpg", es: "Almuerzos", en: "Lunch", subgrupos: [
+      { id: "almuerzos", es: "Almuerzos", en: "Lunch", x: 58, y: 6, grande: true, subgrupos: [
         { id: "pabellon", img: "almuerzos/pabellon-criollo.jpg", es: "Pabellón criollo", en: "Pabellón criollo", categorias: ["Pabellón Criollo"] },
         { id: "bandeja-paisa", img: "almuerzos/bandeja-paisa.jpg", es: "Bandeja paisa", en: "Bandeja paisa", categorias: ["Bandeja Paisa"] },
         { id: "arroz-con-pollo", img: "almuerzos/arroz-con-pollo.jpg", es: "Arroz con pollo", en: "Chicken & rice", categorias: ["Arroz con Pollo"] },
@@ -453,24 +536,86 @@
           { es: "Mondongo", en: "Mondongo", q: "mondongo" },
           { es: "Sancocho", en: "Sancocho", q: "sancocho" }
         ] },
-                { id: "almuerzos-otros", img: "almuerzos/otros.jpg", es: "Otros almuerzos", en: "Other lunches", categorias: ["Almuerzos"] }
+        { id: "almuerzos-otros", img: "almuerzos/otros.jpg", es: "Otros almuerzos", en: "Other lunches", categorias: ["Almuerzos"] }
       ] },
-            { id: "salud", img: "asistencia-medica.jpg", es: "Asistencia médica", en: "Medical care", subgrupos: [
+      { id: "restobar", es: "Resto-bar", en: "Resto-bar", x: 6, y: 49, categorias: ["Resto-Bar"] },
+      { id: "alimentos", es: "Alimentos y bebidas", en: "Food & drinks", x: 1, y: 19, subgrupos: [
+        { id: "supermercados", img: "alimentacion/supermercados.png", es: "Supermercados", en: "Supermarkets", categorias: ["Supermercados"] },
+        { id: "minimercados", img: "alimentacion/minimercados.png", es: "Minimercados", en: "Mini-markets", categorias: ["Minimercados"] },
+        { id: "bodegas", img: "alimentacion/bodegas.png", es: "Bodegas", en: "Corner stores", categorias: ["Bodegas", "Bodegas y Minimarkets"] },
+        { id: "carnicerias", img: "alimentacion/carnicerias.jpg", es: "Carnicerías", en: "Butchers", categorias: ["Carnicerías"] },
+        { id: "charcuterias", img: "alimentacion/charcuterias.jpg", es: "Charcuterías", en: "Delis", categorias: ["Charcuterías"] },
+        { id: "verdulerias", img: "alimentacion/verdulerias.jpg", es: "Verdulerías", en: "Greengrocers", categorias: ["Verdulerías"] },
+        { id: "pescaderias", img: "alimentacion/pescaderias.jpg", es: "Pescaderías", en: "Fishmongers", categorias: ["Pescaderías"] },
+        { id: "panaderias", img: "alimentacion/panaderias.jpg", es: "Panaderías", en: "Bakeries", categorias: ["Panaderías"] },
+        { id: "licorerias", img: "licorerias.jpg", es: "Licorerías", en: "Liquor stores", categorias: ["Licorerías"] }
+      ] },
+      { id: "salud", es: "Salud y bienestar", en: "Health & wellness", x: 54, y: 21, subgrupos: [
         { id: "hospitales", img: "asistenciamedica/hospitales.jpg", es: "Hospitales", en: "Hospitals", categorias: ["Hospitales"] },
         { id: "clinicas", img: "asistenciamedica/clinicas.jpg", es: "Clínicas", en: "Clinics", categorias: ["Clínicas"] },
         { id: "consultorios", img: "asistenciamedica/consultorios-privados.jpg", es: "Consultorios privados", en: "Private practices", categorias: ["Consultorios Privados"] },
         { id: "laboratorios", img: "asistenciamedica/laboratorios.jpg", es: "Laboratorios", en: "Laboratories", categorias: ["Laboratorios"] },
         { id: "odontologia", img: "asistenciamedica/odontologia.jpg", es: "Odontología", en: "Dentists", categorias: ["Odontología"] },
-        { id: "ambulancias", img: "asistenciamedica/ambulancias.jpg", es: "Ambulancias", en: "Ambulances", categorias: ["Ambulancias"] }
+        { id: "ambulancias", img: "asistenciamedica/ambulancias.jpg", es: "Ambulancias", en: "Ambulances", categorias: ["Ambulancias"] },
+        { id: "opticas", img: "asistenciamedica/opticas.jpg", es: "Ópticas", en: "Opticians", categorias: ["Ópticas"] },
+        { id: "naturistas", img: "bienestar/naturistas.jpg", es: "Tiendas naturistas", en: "Health food stores", categorias: ["Tiendas Naturistas"] },
+        { id: "gimnasios-g", img: "bienestar/gimnasios.jpg", es: "Gimnasios", en: "Gyms", categorias: ["Gimnasios"] },
+        { id: "salud-otros", img: "asistenciamedica/otros.jpg", es: "Otros", en: "Other", categorias: ["Otros Servicios de Salud"] }
       ] },
-      { id: "farmacias", img: "farmacias.jpg", es: "Farmacias", en: "Pharmacies", categorias: ["Farmacias"] },
-      { id: "veterinarias", img: "veterinarias.jpg", es: "Veterinarias", en: "Veterinarians", categorias: ["Veterinarias"] },
-      { id: "repuestos", img: "repuestos.jpg", es: "Repuestos", en: "Auto parts", categorias: ["Repuestos de Carro", "Repuestos de Moto", "Repuestos Línea Pesada"] },
-      { id: "talleres", img: "talleres.jpg", es: "Talleres", en: "Workshops", categorias: ["Talleres Mecánicos de Carro", "Talleres Mecánicos de Moto"] },
-      { id: "caucheras", img: "caucheras.jpg", es: "Caucheras", en: "Tire shops", categorias: ["Caucheras"] },
-      { id: "gasolina", img: "gasolina.jpg", es: "Gasolina", en: "Gas stations", categorias: ["Estaciones de Servicio"] },
-      { id: "gruas", img: "grua.jpg", es: "Grúas", en: "Tow trucks", categorias: ["Grúas"] }
+      { id: "farmacias", es: "Farmacias", en: "Pharmacies", x: 20, y: 36, grande: true, categorias: ["Farmacias"] },
+      { id: "mascotas", es: "Mascotas", en: "Pets", x: 12, y: 61, subgrupos: [
+        { id: "veterinarias", img: "veterinarias.jpg", es: "Veterinarias", en: "Veterinarians", categorias: ["Veterinarias"] },
+        { id: "tiendas-mascotas", img: "mascotas/tiendas-mascotas.jpg", es: "Tiendas para mascotas", en: "Pet stores", categorias: ["Tiendas de Mascotas"] },
+        { id: "peluquerias-caninas", img: "mascotas/peluquerias-caninas.jpg", es: "Peluquerías caninas", en: "Dog groomers", categorias: ["Peluquerías Caninas"] }
+      ] },
+      { id: "automotriz", es: "Automotriz", en: "Automotive", x: 65, y: 34, subgrupos: [
+        { id: "repuestos-carro", img: "repuestos/repuestos-carro.jpg", es: "Repuestos de carro", en: "Car parts", categorias: ["Repuestos de Carro"] },
+        { id: "repuestos-moto", img: "repuestos/repuestos-moto.jpg", es: "Repuestos de moto", en: "Motorcycle parts", categorias: ["Repuestos de Moto"] },
+        { id: "repuestos-otros", img: "repuestos/otros.jpg", es: "Otros repuestos", en: "Other parts", categorias: ["Repuestos Línea Pesada", "Otros Repuestos"] },
+        { id: "talleres", img: "talleres.jpg", es: "Talleres", en: "Workshops", categorias: ["Talleres Mecánicos de Carro", "Talleres Mecánicos de Moto"] },
+        { id: "caucheras", img: "caucheras.jpg", es: "Caucheras", en: "Tire shops", categorias: ["Caucheras"] },
+        { id: "gasolina", img: "gasolina.jpg", es: "Gasolina", en: "Gas stations", categorias: ["Estaciones de Servicio"] },
+        { id: "gruas", img: "grua.jpg", es: "Grúas", en: "Tow trucks", categorias: ["Grúas"] }
+      ] },
+      { id: "hoteles", es: "Hoteles y hospedaje", en: "Hotels & lodging", x: 49, y: 61, subgrupos: [
+        { id: "hoteles-h", img: "hospedaje/hoteles.jpg", es: "Hoteles", en: "Hotels", categorias: ["Hoteles"] },
+        { id: "posadas", img: "hospedaje/posadas.jpg", es: "Posadas", en: "Inns", categorias: ["Posadas"] },
+        { id: "moteles", img: "hospedaje/moteles.jpg", es: "Moteles", en: "Motels", categorias: ["Moteles"] }
+      ] },
+      { id: "festejos", es: "Festejos y animación", en: "Parties & entertainment", x: 50, y: 49, subgrupos: [
+        { id: "festejos-f", img: "festejos/festejos.jpg", es: "Festejos", en: "Parties", categorias: ["Festejos"] },
+        { id: "animacion", img: "festejos/animacion.jpg", es: "Animación", en: "Entertainment", categorias: ["Animación"] },
+        { id: "floristerias", img: "festejos/floristerias.jpg", es: "Floristerías", en: "Florists", categorias: ["Floristerías"] }
+      ] },
+      { id: "ferreteria", es: "Hogar y construcción", en: "Home & construction", x: 2, y: 72, subgrupos: [
+        { id: "ferreterias", img: "ferreteria/ferreterias.jpg", es: "Ferreterías", en: "Hardware stores", categorias: ["Ferreterías"] },
+        { id: "materiales", img: "ferreteria/materiales.jpg", es: "Materiales de construcción", en: "Building materials", categorias: ["Materiales de Construcción"] },
+                { id: "tecnicos", img: "ferreteria/tecnicos.jpg", es: "Servicios técnicos", en: "Repair services", categorias: ["Servicios Técnicos"] }
+      ] },
+      { id: "belleza", es: "Belleza y estética", en: "Beauty", x: 55, y: 77, subgrupos: [
+                { id: "peluquerias", img: "belleza/peluquerias.jpg", es: "Peluquerías", en: "Hair salons", categorias: ["Peluquerías"] },
+        { id: "barberias", img: "belleza/barberias.jpg", es: "Barberías", en: "Barbershops", categorias: ["Barberías"] },
+        { id: "unas", img: "belleza/unas.jpg", es: "Uñas y estética", en: "Nails & aesthetics", categorias: ["Uñas y Estética"] },
+        { id: "spa", img: "belleza/spa.jpg", es: "Spa y masajes", en: "Spa & massage", categorias: ["Spa y Masajes"] }
+      ] },
+            { id: "cursos", es: "Educación", en: "Education", x: 64, y: 92, subgrupos: [
+        { id: "cursos-c", img: "cursos/cursos.jpg", es: "Cursos", en: "Courses", categorias: ["Cursos"] },
+        { id: "academias", img: "cursos/academias.jpg", es: "Academias", en: "Academies", categorias: ["Academias"] },
+        { id: "clases", img: "cursos/clases.jpg", es: "Clases particulares", en: "Private lessons", categorias: ["Clases Particulares"] }
+      ] },
+      { id: "tiendas", es: "Tiendas y compras", en: "Shops", x: 1, y: 84, subgrupos: [
+        { id: "papelerias", img: "tiendas/papelerias.jpg", es: "Papelerías", en: "Stationery", categorias: ["Papelerías"] },
+        { id: "merceria", img: "tiendas/merceria.jpg", es: "Mercerías", en: "Haberdashery", categorias: ["Mercerías"] }
+      ] },
+      { id: "transporte", es: "Transporte", en: "Transport", x: 20, y: 96, subgrupos: [
+                { id: "taxis", img: "transporte/taxis.jpg", es: "Taxis", en: "Taxis", categorias: ["Taxis"] },
+        { id: "uber", img: "transporte/uber.jpg", es: "Uber", en: "Uber", categorias: ["Uber"] },
+        { id: "mototaxis", img: "transporte/mototaxis.jpg", es: "Mototaxis", en: "Moto-taxis", categorias: ["Mototaxis"] },
+        { id: "mudanzas", img: "transporte/mudanzas.jpg", es: "Mudanzas", en: "Moving", categorias: ["Mudanzas"] }
+      ] }
     ];
+
+
 
 
 
@@ -520,15 +665,50 @@
     }
 
     function dibujarInicio() {
-      const padre = menuActual ? GRUPOS.find(g => g.id === menuActual) : null;
-      const lista = padre ? padre.subgrupos : GRUPOS;
-      document.getElementById("inicio").innerHTML = lista.map(g => `
-        <div class="tile" role="button" tabindex="0" onclick="abrirGrupo('${g.id}')" onkeypress="if(event.key === 'Enter') abrirGrupo('${g.id}')">
-          <img src="categorias/${g.img}" alt="${g[idiomaActual]}">
+      // Pantalla principal: las flechas sobre el mapa
+      document.getElementById("mapa-inicio").innerHTML = GRUPOS.map(g => `
+        <div class="punto ${g.grande ? "grande" : ""}" style="left: ${g.x}%; top: ${g.y}%;" role="button" tabindex="0" onclick="abrirGrupo('${g.id}')" onkeypress="if(event.key === 'Enter') abrirGrupo('${g.id}')">
+          <img src="mapa/flecha.png" alt="">
           <span>${g[idiomaActual]}</span>
         </div>
       `).join("");
+
+      // Cuadros de los subgrupos (solo cuando se entró a un grupo)
+      const padre = menuActual ? GRUPOS.find(g => g.id === menuActual) : null;
+      document.getElementById("inicio").innerHTML = padre ? padre.subgrupos.map(g => `
+        <div class="tile" role="button" tabindex="0" onclick="abrirGrupo('${g.id}')" onkeypress="if(event.key === 'Enter') abrirGrupo('${g.id}')">
+          ${g.img ? `<img src="categorias/${g.img}" alt="" onerror="this.outerHTML='<div class=\\'tile-ico\\'>${g.ico || "📍"}</div>'">` : `<div class="tile-ico">${g.ico || "📍"}</div>`}
+          <span>${g[idiomaActual]}</span>
+        </div>
+      `).join("") : "";
     }
+
+    // ===== Menú ☰ (páginas de información) =====
+    const MENU_INFO = [
+      { href: "info/nosotros.html",   es: "Nosotros",              en: "About us" },
+      { href: "info/servicios.html",  es: "Productos y Servicios", en: "Products & Services" },
+      { href: "info/contacto.html",   es: "Contacto",              en: "Contact" },
+      { href: "info/preguntas.html",  es: "Preguntas frecuentes",  en: "FAQ" },
+      { href: "info/terminos.html",   es: "Términos y condiciones", en: "Terms & Conditions" },
+      { href: "info/privacidad.html", es: "Política de privacidad", en: "Privacy Policy" }
+    ];
+
+    function dibujarMenu() {
+      document.getElementById("menu-info").innerHTML = MENU_INFO.map(m =>
+        `<a href="${m.href}">${m[idiomaActual]}</a>`
+      ).join("");
+    }
+
+    function toggleMenu(e) {
+      e.stopPropagation();
+      const menu = document.getElementById("menu-info");
+      menu.style.display = menu.style.display === "block" ? "none" : "block";
+    }
+
+    document.addEventListener("click", () => {
+      document.getElementById("menu-info").style.display = "none";
+    });
+
 
     function abrirGrupo(id) {
       const g = obtenerGrupo(id);
@@ -644,6 +824,7 @@
       document.getElementById("opcion-categoria-default").textContent = t.categoriaDefault;
       document.getElementById("texto-filtros-mas").textContent = t.masFiltros;
       document.getElementById("texto-volver").textContent = t.volver;
+      dibujarMenu();
       dibujarInicio();
       document.getElementById("titulo-login").textContent = t.tituloLogin;
       document.getElementById("login-email").placeholder = t.placeholderEmail;
@@ -707,7 +888,19 @@
 
 
 
-
+    function clicBuscar() {
+      const campo = document.getElementById("buscar");
+      if (campo.style.display === "none") {
+        campo.style.display = "block";
+        campo.focus();
+        return;
+      }
+      if (campo.value.trim() === "" && !grupoActivo) {
+        campo.style.display = "none";
+        return;
+      }
+      buscar();
+    }
 
           async function buscar() {
       const t = traducciones[idiomaActual];
@@ -728,7 +921,8 @@
       sessionStorage.setItem("busqueda-precio", document.getElementById("orden-precio").value);
 
       const hayBusqueda = q || categoria;
-      document.getElementById("inicio").style.display = hayBusqueda ? "none" : "grid";
+      document.getElementById("inicio").style.display = (!hayBusqueda && menuActual) ? "grid" : "none";
+      document.getElementById("mapa-inicio").style.display = (!hayBusqueda && !menuActual) ? "block" : "none";
       document.getElementById("boton-volver").style.display = (hayBusqueda || menuActual) ? "block" : "none";
       document.getElementById("filtros").style.display = hayBusqueda ? "block" : "none";
 
@@ -847,6 +1041,7 @@
       filtroActivo = sessionStorage.getItem("busqueda-filtro") || null;
 
       document.getElementById("buscar").value = qGuardado || "";
+      if (qGuardado) document.getElementById("buscar").style.display = "block";
             document.getElementById("filtro-categoria").value = grupoGuardado ? "" : (categoriaGuardada || "");
       document.getElementById("solo-abiertos").checked = sessionStorage.getItem("busqueda-abiertos") === "true";
       document.getElementById("orden-precio").value = sessionStorage.getItem("busqueda-precio") || "";
