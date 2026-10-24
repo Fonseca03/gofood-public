@@ -7,9 +7,9 @@
     :root {
       --fondo: #FAF6EF;
       --texto: #2A2420;
-      --acento: #FF8000;
-      --acento-claro: #FFA01A;
-      --acento-oscuro: #E66800;
+      --acento: #1A7F90;
+      --acento-claro: #2A9DAE;
+      --acento-oscuro: #0F6577;
       --acento-texto: #FFFFFF;
       --abierto: #96E600;
       --cerrado: #A13D3D;
@@ -18,9 +18,9 @@
     [data-tema="oscuro"] {
       --fondo: #121212;
       --texto: #EFEFEF;
-      --acento: #FFA01A;
-      --acento-claro: #FFB84D;
-      --acento-oscuro: #FF8000;
+      --acento: #3FBFD0;
+      --acento-claro: #6AD3E0;
+      --acento-oscuro: #2AA3B5;
       --acento-texto: #121212;
       --abierto: #96E600;
       --cerrado: #C97070;
@@ -35,7 +35,7 @@
       color: var(--texto);
       transition: background 0.2s, color 0.2s;
     }
-    input, select {
+    input, select, textarea {
       display: block;
       margin-bottom: 10px;
       padding: 8px;
@@ -61,24 +61,55 @@
       transform: scale(1);
       transition: transform 0.1s, box-shadow 0.1s;
     }
-    button:hover { opacity: 0.95; }
-    button:active {
-      transform: scale(0.97);
-      box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.35);
+    #contenido button, #boton-mostrar-logo, #boton-estilo,
+    #boton-agregar-plato, #boton-agregar-video, .plato-item button {
+      background: transparent;
+      border: 2px solid var(--acento);
+      color: var(--acento);
+      padding: 8px 18px;
+      font-size: 14px;
+      box-shadow: none;
+    }
+    #contenido button:hover, #boton-mostrar-logo:hover, #boton-estilo:hover,
+    #boton-agregar-plato:hover, #boton-agregar-video:hover, .plato-item button:hover {
+      background: var(--acento);
+      color: var(--acento-texto);
+      opacity: 1;
     }
     .estado-abierto { color: var(--abierto); font-weight: bold; }
     .estado-cerrado { color: var(--cerrado); font-weight: bold; }
     .campo { margin-bottom: 8px; }
     .campo strong { display: inline-block; width: 140px; }
-    #error-carga, #error-perfil, #error-foto, #error-plato { color: var(--cerrado); }
-    #exito-perfil, #exito-foto, #exito-plato { color: var(--abierto); }
-    #form-editar, #form-plato {
+        #error-carga, #error-perfil, #error-foto, #error-plato, #error-videos { color: var(--cerrado); }
+    #exito-perfil, #exito-foto, #exito-plato, #exito-videos { color: var(--abierto); }
+    #form-editar, #form-plato, #form-videos {
       display: none;
       border-top: 1px solid var(--borde);
       margin-top: 20px;
       padding-top: 20px;
     }
     .foto-menu { max-width: 150px; margin: 5px; border-radius: 8px; }
+    #plato-foto { display: none; }
+    .boton-elegir-foto {
+      display: block; text-align: center; padding: 14px;
+      border: 2px dashed var(--acento); border-radius: 10px;
+      color: var(--acento); font-weight: bold; cursor: pointer; margin-bottom: 10px;
+    }
+    #plato-foto-preview {
+      display: block; max-width: 100%; max-height: 260px;
+      margin: 0 auto 10px; border-radius: 10px; object-fit: contain;
+    }
+    #caja-oferta {
+      display: none; margin-bottom: 10px; padding: 10px;
+      border: 2px solid #d62828; border-radius: 10px;
+      color: #d62828; font-weight: bold; cursor: pointer;
+    }
+    #caja-oferta input { display: inline-block; width: auto; margin: 0 8px 0 0; vertical-align: middle; }
+    .etiqueta-oferta {
+      display: inline-block; background: #d62828; color: #fff;
+      font-size: 12px; font-weight: bold; padding: 2px 8px;
+      border-radius: 6px; margin-left: 6px;
+    }
     .plato-item {
       border: 1px solid var(--borde);
       border-radius: 8px;
@@ -92,13 +123,21 @@
       margin-left: -50vw;
       height: 320px;
       overflow: hidden;
-      background: var(--fondo);
+      background: transparent;
       margin-bottom: 60px;
     }
     .banner-fondo {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1;
+      pointer-events: none;
+      max-width: none;
+      margin: 0;
+      border-radius: 0;
+      object-fit: contain;
       object-position: center;
       filter: blur(4px);
       opacity: 0.15;
@@ -179,31 +218,54 @@
     </div>
   </div>
 
-  <div id="seccion-fotos">
-    <h3 id="titulo-fotos-menu">Fotos del menú</h3>
-    <div id="galeria-fotos"></div>
-    <input type="file" id="input-foto" accept="image/*">
-    <button id="boton-subir-foto" onclick="subirFoto()">Subir foto</button>
-    <p id="error-foto"></p>
-    <p id="exito-foto"></p>
+  <div id="seccion-estilo" style="margin-top: 10px;">
+    <button type="button" id="boton-estilo" onclick="mostrarEstilo()">Estilo del catálogo</button>
+    <div id="contenido-estilo" style="display: none; margin-top: 10px;">
+      <p id="texto-estilo" style="font-size: 13px; margin: 0 0 10px 0;"></p>
+      <button type="button" id="estilo-0" onclick="elegirEstilo(0)">Tarjetas</button>
+      <button type="button" id="estilo-1" onclick="elegirEstilo(1)">Horizontal</button>
+      <p id="error-estilo" style="color: var(--cerrado);"></p>
+      <p id="exito-estilo" style="color: var(--abierto);"></p>
+    </div>
   </div>
-
-  <div id="seccion-platos">
-    <h3 id="titulo-platos-menu">Platos del menú</h3>
+    <div id="seccion-platos">
+    <h3 id="titulo-platos-menu">Catálogo</h3>
     <div id="lista-platos"></div>
-    <button id="boton-agregar-plato" onclick="mostrarFormPlato()">Agregar plato</button>
+    <button id="boton-agregar-plato" onclick="mostrarFormPlato()">Agregar al catálogo</button>
+    <button id="boton-agregar-video" onclick="mostrarFormVideos()">Agregar video</button>
   </div>
 
   <div id="form-plato">
     <h3 id="titulo-form-plato">Nuevo plato</h3>
-    <input type="hidden" id="plato-id" value="">
-    <input type="text" id="plato-nombre" placeholder="Nombre del plato">
-    <input type="text" id="plato-descripcion" placeholder="Descripción (opcional)">
-    <input type="text" id="plato-precio" placeholder="Precio (ej: 8.50)">
+        <input type="hidden" id="plato-id" value="">
+    <input type="hidden" id="plato-foto-actual" value="">
+    <label for="plato-foto" class="boton-elegir-foto" id="etiqueta-elegir-foto">📷 Elegir foto</label>
+    <input type="file" id="plato-foto" accept="image/*">
+    <img id="plato-foto-preview" style="display: none;">
+    <label id="caja-oferta"><input type="checkbox" id="plato-oferta"><span id="texto-oferta">Marcar esta foto como oferta</span></label>
+    <input type="text" id="plato-nombre" placeholder="Nombre">
+    <textarea id="plato-descripcion" rows="10" maxlength="1000" placeholder="Descripción (opcional)"></textarea>
+    <input type="text" id="plato-precio" placeholder="Precio (ej: 8.50)" oninput="actualizarVistaBs()">
+<p id="precio-bs" style="font-size: 13px; margin: 0 0 6px 0; opacity: 0.8;"></p>
+    <p id="nota-precio" style="font-size: 13px; margin: 0 0 10px 0;"></p>
     <button id="boton-guardar-plato" onclick="guardarPlato()">Guardar plato</button>
     <button type="button" id="boton-cancelar-plato" onclick="cancelarFormPlato()">Cancelar</button>
     <p id="error-plato"></p>
     <p id="exito-plato"></p>
+  </div>
+
+  <div id="form-videos">
+    <h3 id="titulo-form-videos">Videos</h3>
+    <input type="text" id="video-1" placeholder="Video 1 (link)">
+    <input type="text" id="video-2" placeholder="Video 2 (link)">
+    <p id="etiqueta-oferta" style="font-weight: bold; margin: 6px 0 4px 0;">Oferta</p>
+    <input type="text" id="video-oferta" placeholder="Video de oferta (link)">
+    <p id="nota-videos-form" style="font-size: 13px; margin: 0 0 10px 0;"></p>
+    <p id="estado-videos" style="font-size: 13px; margin: 0 0 10px 0;"></p>
+    <button id="boton-guardar-videos" onclick="guardarVideos()">Guardar videos</button>
+    <button type="button" id="boton-cancelar-videos" onclick="cancelarFormVideos()">Cancelar</button>
+    <p id="error-videos"></p>
+    <p id="exito-videos"></p>
   </div>
 
   <div id="form-editar">
@@ -212,30 +274,102 @@
     <input type="text" id="editar-descripcion" placeholder="Descripción (opcional)">
     <input type="text" id="editar-direccion" placeholder="Dirección">
     <input type="text" id="editar-telefono" placeholder="Teléfono con código de país (ej: 58 4141234567)" onkeypress="return /[0-9\s-]/.test(event.key)">
-    <input type="text" id="editar-coords" placeholder="Coordenadas (7.759796, -72.214559)">
+    <input type="hidden" id="editar-coords">
 
     <input type="text" id="editar-tiktok" placeholder="Link de TikTok (opcional)">
     <input type="text" id="editar-instagram" placeholder="Link de Instagram (opcional)">
     <input type="text" id="editar-facebook" placeholder="Link de Facebook (opcional)">
     <input type="email" id="editar-contacto-email" placeholder="Correo de contacto (opcional, para avisos)">
 
-    <select id="editar-categoria">
-      <option value="Bodegas y Minimarkets">Bodegas y Minimarkets</option>
-      <option value="Caucheras">Caucheras</option>
-      <option value="Clínicas">Clínicas</option>
-      <option value="Comida">Comida</option>
-      <option value="Entretenimiento">Entretenimiento</option>
-      <option value="Estaciones de Servicio">Estaciones de Servicio</option>
-      <option value="Farmacias">Farmacias</option>
-      <option value="Hospitales">Hospitales</option>
+        <select id="editar-categoria">
+      <option value="Hamburguesas">Hamburguesas</option>
+      <option value="Pizzas">Pizzas</option>
+      <option value="Perros Calientes">Perros Calientes</option>
+      <option value="Arepas">Arepas</option>
+      <option value="Tequeños">Tequeños</option>
+      <option value="Pasteles y Empanadas">Pasteles y Empanadas</option>
+      <option value="Postres">Postres</option>
+      <option value="Sushi">Sushi</option>
+      <option value="Cachapas">Cachapas</option>
+      <option value="Cafeterías">Cafeterías</option>
+      <option value="Helados">Helados</option>
+      <option value="Shawarmas">Shawarmas</option>
+      <option value="Comida Rápida">Comida Rápida</option>
+      <option value="Pabellón Criollo">Pabellón Criollo</option>
+      <option value="Bandeja Paisa">Bandeja Paisa</option>
+      <option value="Arroz con Pollo">Arroz con Pollo</option>
+      <option value="Pollo">Pollo</option>
+      <option value="Pollo al Horno">Pollo al Horno</option>
+      <option value="Milanesas">Milanesas</option>
+      <option value="Chuleta de Cerdo">Chuleta de Cerdo</option>
+      <option value="Parrillas">Parrillas</option>
+      <option value="Pastas">Pastas</option>
+      <option value="Pasticho">Pasticho</option>
+      <option value="Comida China">Comida China</option>
+      <option value="Comida de Mar">Comida de Mar</option>
+      <option value="Ensaladas">Ensaladas</option>
+      <option value="Sopas">Sopas</option>
+      <option value="Almuerzos">Almuerzos</option>
+      <option value="Resto-Bar">Resto-Bar</option>
+      <option value="Supermercados">Supermercados</option>
+      <option value="Minimercados">Minimercados</option>
+      <option value="Bodegas">Bodegas</option>
+      <option value="Carnicerías">Carnicerías</option>
+      <option value="Charcuterías">Charcuterías</option>
+      <option value="Verdulerías">Verdulerías</option>
+      <option value="Pescaderías">Pescaderías</option>
+      <option value="Panaderías">Panaderías</option>
       <option value="Licorerías">Licorerías</option>
+      <option value="Hospitales">Hospitales</option>
+      <option value="Clínicas">Clínicas</option>
+      <option value="Consultorios Privados">Consultorios Privados</option>
+      <option value="Laboratorios">Laboratorios</option>
+      <option value="Odontología">Odontología</option>
+      <option value="Ambulancias">Ambulancias</option>
+      <option value="Ópticas">Ópticas</option>
+      <option value="Tiendas Naturistas">Tiendas Naturistas</option>
+      <option value="Gimnasios">Gimnasios</option>
+      <option value="Otros Servicios de Salud">Otros Servicios de Salud</option>
+      <option value="Farmacias">Farmacias</option>
+      <option value="Veterinarias">Veterinarias</option>
+      <option value="Tiendas de Mascotas">Tiendas de Mascotas</option>
+      <option value="Peluquerías Caninas">Peluquerías Caninas</option>
       <option value="Repuestos de Carro">Repuestos de Carro</option>
       <option value="Repuestos de Moto">Repuestos de Moto</option>
       <option value="Repuestos Línea Pesada">Repuestos Línea Pesada</option>
-      <option value="Supermercados">Supermercados</option>
+      <option value="Otros Repuestos">Otros Repuestos</option>
       <option value="Talleres Mecánicos de Carro">Talleres Mecánicos de Carro</option>
       <option value="Talleres Mecánicos de Moto">Talleres Mecánicos de Moto</option>
-      <option value="Veterinarias">Veterinarias</option>
+      <option value="Caucheras">Caucheras</option>
+      <option value="Estaciones de Servicio">Estaciones de Servicio</option>
+      <option value="Grúas">Grúas</option>
+      <option value="Hoteles">Hoteles</option>
+      <option value="Posadas">Posadas</option>
+      <option value="Moteles">Moteles</option>
+      <option value="Festejos">Festejos</option>
+      <option value="Animación">Animación</option>
+      <option value="Floristerías">Floristerías</option>
+      <option value="Ferreterías">Ferreterías</option>
+      <option value="Materiales de Construcción">Materiales de Construcción</option>
+      <option value="Servicios Técnicos">Servicios Técnicos</option>
+      <option value="Peluquerías">Peluquerías</option>
+      <option value="Barberías">Barberías</option>
+      <option value="Uñas y Estética">Uñas y Estética</option>
+      <option value="Spa y Masajes">Spa y Masajes</option>
+      <option value="Cursos">Cursos</option>
+      <option value="Academias">Academias</option>
+      <option value="Clases Particulares">Clases Particulares</option>
+      <option value="Papelerías">Papelerías</option>
+      <option value="Mercerías">Mercerías</option>
+      <option value="Taxis">Taxis</option>
+      <option value="Uber">Uber</option>
+      <option value="Mototaxis">Mototaxis</option>
+      <option value="Mudanzas">Mudanzas</option>
+      <option value="Servicios Profesionales">Servicios Profesionales</option>
+      <option value="Venta de Celulares">Venta de Celulares</option>
+      <option value="Venta de Computadoras">Venta de Computadoras</option>
+      <option value="Servicio Técnico de Celulares">Servicio Técnico de Celulares</option>
+      <option value="Servicio Técnico de Computadoras">Servicio Técnico de Computadoras</option>
     </select>
 
     <button id="boton-guardar-perfil" onclick="guardarPerfil()">Guardar cambios</button>
@@ -251,6 +385,37 @@
 
   <script>
     const API_URL = "https://gofood-api-production.up.railway.app";
+
+// ===== Tasa oficial del BCV (para mostrar el precio en Bs) =====
+let tasaUsd = null;
+
+function formatoBs(n) {
+  const [entero, decimales] = n.toFixed(2).split(".");
+  return entero.replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "," + decimales;
+}
+
+function textoPrecio(usd) {
+  const base = `$${Number(usd).toFixed(2)}`;
+  if (!tasaUsd) return base;
+  return `${base} · Bs ${formatoBs(Number(usd) * tasaUsd)}`;
+}
+
+function actualizarVistaBs() {
+  const el = document.getElementById("precio-bs");
+  if (!el) return;
+  const v = parseFloat(document.getElementById("plato-precio").value);
+  el.textContent = (tasaUsd && !isNaN(v) && v >= 0) ? `≈ Bs ${formatoBs(v * tasaUsd)}` : "";
+}
+
+fetch(`${API_URL}/api/tasa`)
+  .then(r => r.ok ? r.json() : Promise.reject())
+  .then(d => {
+    tasaUsd = d.usd;
+    // si la lista de platos ya se dibujó, la dibujamos de nuevo para que aparezcan los Bs
+    try { renderizarPlatos(); } catch (e) {}
+    try { actualizarVistaBs(); } catch (e) {}
+  })
+  .catch(() => {});
     const token = sessionStorage.getItem("token");
 
     if (!token) {
@@ -273,6 +438,18 @@
         elegirImagenPrimero: "Elegí una imagen primero.",
         noSePudoSubirLogo: "No se pudo subir el logo.",
         logoActualizado: "Logo actualizado con éxito.",
+        logoEnRevision: "Tu logo nuevo está en revisión. Se publicará cuando sea aprobado.",
+        logoRechazado: "Tu último logo fue rechazado. Subí otro.",
+        fotoEnRevision: "Foto en revisión",
+        fotoRechazada: "Foto rechazada, subí otra",
+        videosEnRevision: "Tus videos nuevos están en revisión. Se publicarán cuando sean aprobados.",
+        videosRechazados: "Tus últimos videos fueron rechazados. Cargá otros.",
+        estiloCatalogo: "Estilo del catálogo",
+        estiloTexto: "Elegí cómo se ve tu catálogo en la página de tu negocio.",
+        estiloTarjetas: "Tarjetas",
+        estiloHorizontal: "Horizontal",
+        estiloGuardado: "Estilo guardado.",
+        noSePudoGuardarEstilo: "No se pudo guardar el estilo.",
         fotosMenu: "Fotos del menú",
         subirFoto: "Subir foto",
         sinFotos: "No hay fotos cargadas todavía.",
@@ -281,21 +458,24 @@
         eliminar: "Eliminar",
         confirmarEliminarFoto: "¿Seguro que querés eliminar esta foto?",
         noSePudoEliminarFoto: "No se pudo eliminar la foto.",
-        platosMenu: "Platos del menú",
-        agregarPlato: "Agregar plato",
-        sinPlatos: "No hay platos cargados todavía.",
+        platosMenu: "Catálogo",
+        agregarPlato: "Agregar al catálogo",
+        sinPlatos: "Todavía no hay nada en el catálogo.",
         editar: "Editar",
-        confirmarEliminarPlato: "¿Seguro que querés eliminar este plato?",
-        noSePudoEliminarPlato: "No se pudo eliminar el plato.",
-        nuevoPlato: "Nuevo plato",
-        editarPlato: "Editar plato",
-        platoNombrePlaceholder: "Nombre del plato",
+        confirmarEliminarPlato: "¿Seguro que querés eliminar este elemento?",
+        noSePudoEliminarPlato: "No se pudo eliminar el elemento.",
+        nuevoPlato: "Nuevo elemento",
+        editarPlato: "Editar elemento",
+        platoNombrePlaceholder: "Nombre",
         platoDescripcionPlaceholder: "Descripción (opcional)",
-        platoPrecioPlaceholder: "Precio (ej: 8.50)",
+        platoPrecioPlaceholder: "Precio (opcional, ej: 8.50)",
+        notaPrecio: "Cada negocio define y actualiza sus propios precios. Ubik no se hace responsable por los precios publicados.",
         precioInvalido: "Ingresá un precio válido (ej: 8.50).",
-        guardarPlato: "Guardar plato",
+        guardarPlato: "Guardar",
+        elegirFoto: "📷 Elegir foto",
+        marcarOferta: "Marcar esta foto como oferta",
         cancelar: "Cancelar",
-        noSePudoGuardarPlato: "No se pudo guardar el plato.",
+        noSePudoGuardarPlato: "No se pudo guardar el elemento.",
         editarPerfil: "Editar perfil",
         nombreRestaurantePlaceholder: "Nombre del restaurante",
         descripcionPlaceholder: "Descripción (opcional)",
@@ -306,6 +486,19 @@
         instagramPlaceholder: "Link de Instagram (opcional)",
         facebookPlaceholder: "Link de Facebook (opcional)",
         contactoEmailPlaceholder: "Correo de contacto (opcional, para avisos)",
+        videosPlaceholder: "Links de videos (uno por línea, máximo 3)",
+        notaVideos: "Solo links de YouTube, TikTok o Instagram (https).",
+        tituloVideos: "Videos",
+        agregarVideo: "Agregar video",
+        video1Placeholder: "Video 1 (link)",
+        video2Placeholder: "Video 2 (link)",
+        etiquetaOferta: "Oferta",
+        videoOfertaPlaceholder: "Video de oferta (link)",
+        notaVideosOferta: "Si pegás un link en Oferta, tu local aparece con la etiqueta roja \"Ofertas\". Para quitarla, borrá el link.",
+        guardarVideos: "Guardar videos",
+        videosGuardados: "Videos guardados con éxito.",
+        noSePudoGuardarVideos: "No se pudieron guardar los videos.",
+        videosInvalidos: "Revisá los links de videos: solo se aceptan YouTube, TikTok o Instagram con https.",
         guardarCambios: "Guardar cambios",
         guardando: "Guardando...",
         telefonoInvalido: "El teléfono solo puede contener números, espacios y guiones.",
@@ -334,6 +527,18 @@
         elegirImagenPrimero: "Choose an image first.",
         noSePudoSubirLogo: "Could not upload the logo.",
         logoActualizado: "Logo updated successfully.",
+        logoEnRevision: "Your new logo is under review. It will be published once approved.",
+        logoRechazado: "Your last logo was rejected. Please upload another one.",
+        fotoEnRevision: "Photo under review",
+        fotoRechazada: "Photo rejected, please upload another one",
+        videosEnRevision: "Your new videos are under review. They will be published once approved.",
+        videosRechazados: "Your last videos were rejected. Please add different ones.",
+        estiloCatalogo: "Catalog style",
+        estiloTexto: "Choose how your catalog looks on your business page.",
+        estiloTarjetas: "Cards",
+        estiloHorizontal: "Horizontal",
+        estiloGuardado: "Style saved.",
+        noSePudoGuardarEstilo: "Could not save the style.",
         fotosMenu: "Menu photos",
         subirFoto: "Upload photo",
         sinFotos: "No photos uploaded yet.",
@@ -342,21 +547,24 @@
         eliminar: "Delete",
         confirmarEliminarFoto: "Are you sure you want to delete this photo?",
         noSePudoEliminarFoto: "Could not delete the photo.",
-        platosMenu: "Menu dishes",
-        agregarPlato: "Add dish",
-        sinPlatos: "No dishes added yet.",
+                platosMenu: "Catalog",
+        agregarPlato: "Add to catalog",
+        sinPlatos: "Nothing in the catalog yet.",
         editar: "Edit",
-        confirmarEliminarPlato: "Are you sure you want to delete this dish?",
-        noSePudoEliminarPlato: "Could not delete the dish.",
-        nuevoPlato: "New dish",
-        editarPlato: "Edit dish",
-        platoNombrePlaceholder: "Dish name",
+        confirmarEliminarPlato: "Are you sure you want to delete this item?",
+        noSePudoEliminarPlato: "Could not delete the item.",
+        nuevoPlato: "New item",
+        editarPlato: "Edit item",
+        platoNombrePlaceholder: "Name",
         platoDescripcionPlaceholder: "Description (optional)",
-        platoPrecioPlaceholder: "Price (e.g.: 8.50)",
+        platoPrecioPlaceholder: "Price (optional, e.g.: 8.50)",
+        notaPrecio: "Each business sets and updates its own prices. Ubik is not responsible for the published prices.",
         precioInvalido: "Enter a valid price (e.g.: 8.50).",
-        guardarPlato: "Save dish",
+        guardarPlato: "Save",
+        elegirFoto: "📷 Choose photo",
+        marcarOferta: "Mark this photo as an offer",
         cancelar: "Cancel",
-        noSePudoGuardarPlato: "Could not save the dish.",
+        noSePudoGuardarPlato: "Could not save the item.",
         editarPerfil: "Edit profile",
         nombreRestaurantePlaceholder: "Restaurant name",
         descripcionPlaceholder: "Description (optional)",
@@ -367,6 +575,19 @@
         instagramPlaceholder: "Instagram link (optional)",
         facebookPlaceholder: "Facebook link (optional)",
         contactoEmailPlaceholder: "Contact email (optional, for notices)",
+        videosPlaceholder: "Video links (one per line, max 3)",
+        notaVideos: "Only YouTube, TikTok or Instagram links (https).",
+        tituloVideos: "Videos",
+        agregarVideo: "Add video",
+        video1Placeholder: "Video 1 (link)",
+        video2Placeholder: "Video 2 (link)",
+        etiquetaOferta: "Offer",
+        videoOfertaPlaceholder: "Offer video (link)",
+        notaVideosOferta: "If you paste a link in Offer, your business shows the red \"Offers\" tag. To remove it, delete the link.",
+        guardarVideos: "Save videos",
+        videosGuardados: "Videos saved successfully.",
+        noSePudoGuardarVideos: "Could not save the videos.",
+        videosInvalidos: "Check the video links: only YouTube, TikTok or Instagram with https.",
         guardarCambios: "Save changes",
         guardando: "Saving...",
         telefonoInvalido: "The phone number can only contain numbers, spaces and hyphens.",
@@ -385,23 +606,95 @@
       }
     };
 
-    const categoriasEnIngles = {
-      "Bodegas y Minimarkets": "Grocery & Convenience Stores",
-      "Caucheras": "Tire Shops",
-      "Clínicas": "Clinics",
-      "Comida": "Food",
-      "Entretenimiento": "Entertainment",
-      "Estaciones de Servicio": "Gas Stations",
-      "Farmacias": "Pharmacies",
-      "Hospitales": "Hospitals",
+        const categoriasEnIngles = {
+      "Hamburguesas": "Burgers",
+      "Pizzas": "Pizza",
+      "Perros Calientes": "Hot Dogs",
+      "Arepas": "Arepas",
+      "Tequeños": "Tequeños",
+      "Pasteles y Empanadas": "Pastries & Empanadas",
+      "Postres": "Desserts",
+      "Sushi": "Sushi",
+      "Cachapas": "Cachapas",
+      "Cafeterías": "Cafés",
+      "Helados": "Ice Cream",
+      "Shawarmas": "Shawarmas",
+      "Comida Rápida": "Fast Food",
+      "Pabellón Criollo": "Pabellón Criollo",
+      "Bandeja Paisa": "Bandeja Paisa",
+      "Arroz con Pollo": "Chicken & Rice",
+      "Pollo": "Chicken",
+      "Pollo al Horno": "Roast Chicken",
+      "Milanesas": "Milanesas",
+      "Chuleta de Cerdo": "Pork Chop",
+      "Parrillas": "Grill",
+      "Pastas": "Pasta",
+      "Pasticho": "Lasagna",
+      "Comida China": "Chinese Food",
+      "Comida de Mar": "Seafood",
+      "Ensaladas": "Salads",
+      "Sopas": "Soups",
+      "Almuerzos": "Lunch",
+      "Resto-Bar": "Resto-Bar",
+      "Supermercados": "Supermarkets",
+      "Minimercados": "Mini-markets",
+      "Bodegas": "Corner Stores",
+      "Carnicerías": "Butchers",
+      "Charcuterías": "Delis",
+      "Verdulerías": "Greengrocers",
+      "Pescaderías": "Fishmongers",
+      "Panaderías": "Bakeries",
       "Licorerías": "Liquor Stores",
+      "Hospitales": "Hospitals",
+      "Clínicas": "Clinics",
+      "Consultorios Privados": "Private Practices",
+      "Laboratorios": "Laboratories",
+      "Odontología": "Dentists",
+      "Ambulancias": "Ambulances",
+      "Ópticas": "Opticians",
+      "Tiendas Naturistas": "Health Food Stores",
+      "Gimnasios": "Gyms",
+      "Otros Servicios de Salud": "Other Health Services",
+      "Farmacias": "Pharmacies",
+      "Veterinarias": "Veterinary Clinics",
+      "Tiendas de Mascotas": "Pet Stores",
+      "Peluquerías Caninas": "Dog Groomers",
       "Repuestos de Carro": "Car Parts",
       "Repuestos de Moto": "Motorcycle Parts",
       "Repuestos Línea Pesada": "Heavy Equipment Parts",
-      "Supermercados": "Supermarkets",
+      "Otros Repuestos": "Other Parts",
       "Talleres Mecánicos de Carro": "Car Repair Shops",
       "Talleres Mecánicos de Moto": "Motorcycle Repair Shops",
-      "Veterinarias": "Veterinary Clinics"
+      "Caucheras": "Tire Shops",
+      "Estaciones de Servicio": "Gas Stations",
+      "Grúas": "Tow Trucks",
+      "Hoteles": "Hotels",
+      "Posadas": "Inns",
+      "Moteles": "Motels",
+      "Festejos": "Parties",
+      "Animación": "Entertainment",
+      "Floristerías": "Florists",
+      "Ferreterías": "Hardware Stores",
+      "Materiales de Construcción": "Building Materials",
+      "Servicios Técnicos": "Repair Services",
+      "Peluquerías": "Hair Salons",
+      "Barberías": "Barbershops",
+      "Uñas y Estética": "Nails & Aesthetics",
+      "Spa y Masajes": "Spa & Massage",
+      "Cursos": "Courses",
+      "Academias": "Academies",
+      "Clases Particulares": "Private Lessons",
+      "Papelerías": "Stationery",
+      "Mercerías": "Haberdashery",
+      "Taxis": "Taxis",
+      "Uber": "Uber",
+      "Mototaxis": "Moto-taxis",
+      "Mudanzas": "Moving",
+      "Servicios Profesionales": "Professional Services",
+      "Venta de Celulares": "Cell Phone Sales",
+      "Venta de Computadoras": "Computer Sales",
+      "Servicio Técnico de Celulares": "Cell Phone Repair",
+      "Servicio Técnico de Computadoras": "Computer Repair"
     };
 
     let idiomaActual = localStorage.getItem("idioma") || "es";
@@ -448,8 +741,8 @@
       `;
 
       renderizarLogo();
-      renderizarFotos();
       renderizarPlatos();
+      marcarEstilo();
     }
 
     function renderizarLogo() {
@@ -468,6 +761,12 @@
         contenedor.innerHTML = `<p>${t.sinLogo}</p>`;
         bannerImg.style.display = "none";
         avatarImg.style.display = "none";
+      }
+
+      if (miRestaurante.logoModStatus === 1 && miRestaurante.pendingLogoUrl) {
+        contenedor.innerHTML += `<p style="color:#e6a700;">⏳ ${t.logoEnRevision}</p><img class="foto-menu" src="${miRestaurante.pendingLogoUrl}" style="opacity:.6;">`;
+      } else if (miRestaurante.logoModStatus === 2) {
+        contenedor.innerHTML += `<p style="color:#d33;">❌ ${t.logoRechazado}</p>`;
       }
     }
 
@@ -500,13 +799,114 @@
       }
 
       lista.innerHTML = platos.map(p => `
-        <div class="plato-item">
-          <strong>${p.name}</strong> - $${p.price}<br>
-          ${p.description ?? ""}<br>
-          <button onclick='mostrarFormPlato(${JSON.stringify(p)})'>${t.editar}</button>
+          <div class="plato-item">
+          ${p.photoUrl ? `<img class="foto-menu" src="${p.photoUrl}"><br>` : ""}
+          ${p.photoModStatus === 1 ? `<div style="color:#e6a700;">⏳ ${t.fotoEnRevision}</div>${p.pendingPhotoUrl ? `<img class="foto-menu" src="${p.pendingPhotoUrl}" style="opacity:.6;"><br>` : ""}` : ""}
+          ${p.photoModStatus === 2 ? `<div style="color:#d33;">❌ ${t.fotoRechazada}</div>` : ""}
+          <strong>${p.name}</strong>${p.isOffer ? `<span class="etiqueta-oferta">${t.etiquetaOferta}</span>` : ""}${p.price > 0 ? ` - ${textoPrecio(p.price)}` : ""}<br>
+          <div style="white-space: pre-line;">${p.description ?? ""}</div>
+          <button onclick="mostrarFormPlatoPorId('${p.id}')">${t.editar}</button>
           <button onclick="eliminarPlato('${p.id}')">${t.eliminar}</button>
         </div>
       `).join("");
+    }
+
+    function mostrarFormVideos() {
+      const r = miRestaurante;
+      const lista = r.videoLinks || [];
+      document.getElementById("video-1").value = lista[0] || "";
+      document.getElementById("video-2").value = lista[1] || "";
+      document.getElementById("video-oferta").value = r.offerVideoLink || "";
+      document.getElementById("error-videos").textContent = "";
+      document.getElementById("exito-videos").textContent = "";
+      const tt = traducciones[idiomaActual];
+      document.getElementById("estado-videos").textContent =
+        r.videosModStatus === 1 ? "⏳ " + tt.videosEnRevision :
+        r.videosModStatus === 2 ? "❌ " + tt.videosRechazados : "";
+      document.getElementById("form-videos").style.display = "block";
+      window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function cancelarFormVideos() {
+      document.getElementById("form-videos").style.display = "none";
+    }
+
+    async function guardarVideos() {
+      const t = traducciones[idiomaActual];
+      const errorEl = document.getElementById("error-videos");
+      const exitoEl = document.getElementById("exito-videos");
+      errorEl.textContent = "";
+      exitoEl.textContent = "";
+
+      const videos = [
+        document.getElementById("video-1").value.trim(),
+        document.getElementById("video-2").value.trim()
+      ].filter(v => v !== "");
+      const oferta = document.getElementById("video-oferta").value.trim();
+
+      const dominiosVideo = ["youtube.com", "youtu.be", "tiktok.com", "instagram.com"];
+      const esValido = (v) => {
+        try {
+          const u = new URL(v);
+          const h = u.hostname.toLowerCase();
+          return u.protocol === "https:" && dominiosVideo.some(d => h === d || h.endsWith("." + d));
+        } catch (e) {
+          return false;
+        }
+      };
+      if (!videos.every(esValido) || (oferta !== "" && !esValido(oferta))) {
+        errorEl.textContent = t.videosInvalidos;
+        return;
+      }
+
+      const r = miRestaurante;
+      const body = {
+        name: r.name,
+        description: r.description ?? null,
+        address: r.address,
+        phone: r.phone,
+        latitude: r.latitude,
+        longitude: r.longitude,
+        socialMediaLink: r.socialMediaLink ?? null,
+        tikTokLink: r.tikTokLink ?? null,
+        instagramLink: r.instagramLink ?? null,
+        facebookLink: r.facebookLink ?? null,
+        contactEmail: r.contactEmail ?? null,
+        category: r.category,
+        videoLinks: videos,
+        offerVideoLink: oferta
+      };
+
+      const botonEl = document.getElementById("boton-guardar-videos");
+      botonEl.disabled = true;
+
+      try {
+        const response = await fetch(`${API_URL}/api/restaurants/me`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          body: JSON.stringify(body)
+        });
+
+        if (!response.ok) {
+          errorEl.textContent = t.noSePudoGuardarVideos;
+          return;
+        }
+        await cargarMiPerfil();
+        exitoEl.textContent = miRestaurante.videosModStatus === 1 ? t.videosEnRevision : t.videosGuardados;
+        setTimeout(() => { document.getElementById("form-videos").style.display = "none"; }, 1200);
+      } catch (err) {
+        errorEl.textContent = t.errorConexion;
+      } finally {
+        botonEl.disabled = false;
+      }
+    }
+
+    function mostrarFormPlatoPorId(id) {
+      const plato = (miRestaurante.menuItems || []).find(p => p.id === id);
+      if (plato) mostrarFormPlato(plato);
     }
 
     function mostrarFormPlato(plato) {
@@ -520,7 +920,11 @@
         document.getElementById("plato-id").value = plato.id;
         document.getElementById("plato-nombre").value = plato.name;
         document.getElementById("plato-descripcion").value = plato.description ?? "";
-        document.getElementById("plato-precio").value = plato.price;
+        document.getElementById("plato-precio").value = plato.price > 0 ? plato.price : "";
+        actualizarVistaBs();
+        document.getElementById("plato-foto-actual").value = plato.photoUrl ?? "";
+        mostrarPreviewFoto(plato.photoUrl);
+        document.getElementById("plato-oferta").checked = !!plato.isOffer;
       } else {
         modoFormPlato = "nuevo";
         document.getElementById("titulo-form-plato").textContent = t.nuevoPlato;
@@ -528,10 +932,65 @@
         document.getElementById("plato-nombre").value = "";
         document.getElementById("plato-descripcion").value = "";
         document.getElementById("plato-precio").value = "";
+        actualizarVistaBs();
+        document.getElementById("plato-foto-actual").value = "";
+        mostrarPreviewFoto(null);
       }
+      document.getElementById("plato-foto").value = "";
 
       document.getElementById("form-plato").style.display = "block";
       window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function mostrarPreviewFoto(url) {
+      const img = document.getElementById("plato-foto-preview");
+      if (url) {
+                img.src = url;
+        img.style.display = "block";
+        document.getElementById("caja-oferta").style.display = "block";
+      } else {
+        img.style.display = "none";
+        document.getElementById("caja-oferta").style.display = "none";
+                document.getElementById("plato-oferta").checked = false;
+      }
+    }
+
+    document.getElementById("plato-foto").addEventListener("change", (e) => {
+      const archivo = e.target.files[0];
+      mostrarPreviewFoto(archivo ? URL.createObjectURL(archivo) : document.getElementById("plato-foto-actual").value);
+    });
+
+    async function subirFotoDelPlato(archivo) {
+      const formData = new FormData();
+      formData.append("file", archivo);
+
+      const response = await fetch(`${API_URL}/api/restaurants/me/menu-photo`, {
+        method: "POST",
+        headers: { "Authorization": `Bearer ${token}` },
+        body: formData
+      });
+
+      if (!response.ok) throw new Error("foto");
+
+      const data = await response.json();
+      miRestaurante.menuPhotos = miRestaurante.menuPhotos || [];
+      miRestaurante.menuPhotos.push({ id: data.photoId, url: data.url });
+      return data.url;
+    }
+
+    async function borrarFotoPorUrl(url) {
+      if (!url) return;
+      const foto = (miRestaurante.menuPhotos || []).find(f => f.url === url);
+      if (!foto) return;
+
+      try {
+        await fetch(`${API_URL}/api/restaurants/me/menu-photo/${foto.id}`, {
+          method: "DELETE",
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+      } catch (err) {}
+
+      miRestaurante.menuPhotos = miRestaurante.menuPhotos.filter(f => f.id !== foto.id);
     }
 
     function cancelarFormPlato() {
@@ -546,10 +1005,22 @@
       exitoEl.textContent = "";
 
       const id = document.getElementById("plato-id").value;
-      const precio = parseFloat(document.getElementById("plato-precio").value);
+      const precioTexto = document.getElementById("plato-precio").value.trim();
+      const precio = precioTexto === "" ? 0 : parseFloat(precioTexto);
 
       if (isNaN(precio) || precio < 0) {
         errorEl.textContent = t.precioInvalido;
+        return;
+      }
+
+            const archivo = document.getElementById("plato-foto").files[0];
+      const fotoAnterior = document.getElementById("plato-foto-actual").value;
+      let fotoUrl = fotoAnterior || null;
+
+      try {
+        if (archivo) fotoUrl = await subirFotoDelPlato(archivo);
+      } catch (err) {
+        errorEl.textContent = t.noSePudoSubirFoto;
         return;
       }
 
@@ -557,7 +1028,8 @@
         name: document.getElementById("plato-nombre").value,
         description: document.getElementById("plato-descripcion").value || null,
         price: precio,
-        photoUrl: null
+               photoUrl: fotoUrl,
+        isOffer: !!fotoUrl && document.getElementById("plato-oferta").checked
       };
 
       const esEdicion = !!id;
@@ -576,13 +1048,16 @@
         });
 
         if (!response.ok) {
-          errorEl.textContent = t.noSePudoGuardarPlato;
+                    errorEl.textContent = t.noSePudoGuardarPlato;
           return;
         }
 
+        if (archivo && fotoAnterior) await borrarFotoPorUrl(fotoAnterior);
+
         if (esEdicion) {
-          const item = miRestaurante.menuItems.find(p => p.id === id);
-          Object.assign(item, body);
+          await cargarMiPerfil();
+          cancelarFormPlato();
+          return;
         } else {
           const nuevo = await response.json();
           miRestaurante.menuItems = miRestaurante.menuItems || [];
@@ -612,6 +1087,8 @@
           return;
         }
 
+        const platoBorrado = miRestaurante.menuItems.find(p => p.id === id);
+        if (platoBorrado) await borrarFotoPorUrl(platoBorrado.photoUrl);
         miRestaurante.menuItems = miRestaurante.menuItems.filter(p => p.id !== id);
         renderizarPlatos();
       } catch (err) {
@@ -726,15 +1203,58 @@
         }
 
         const data = await response.json();
-        miRestaurante.logoUrl = data.url;
+        miRestaurante.pendingLogoUrl = data.url;
+        miRestaurante.logoModStatus = 1;
         renderizarLogo();
         inputLogo.value = "";
-        exitoEl.textContent = t.logoActualizado;
+        exitoEl.textContent = t.logoEnRevision;
       } catch (err) {
         errorEl.textContent = t.errorConexion;
       }
     }
 
+    function mostrarEstilo() {
+      const div = document.getElementById("contenido-estilo");
+      div.style.display = div.style.display === "none" ? "block" : "none";
+    }
+
+    function marcarEstilo() {
+      if (!miRestaurante) return;
+      const t = traducciones[idiomaActual];
+      const e = miRestaurante.catalogStyle ?? 0;
+      document.getElementById("estilo-0").textContent = (e === 0 ? "✓ " : "") + t.estiloTarjetas;
+      document.getElementById("estilo-1").textContent = (e === 1 ? "✓ " : "") + t.estiloHorizontal;
+    }
+
+    async function elegirEstilo(n) {
+      const t = traducciones[idiomaActual];
+      const errorEl = document.getElementById("error-estilo");
+      const exitoEl = document.getElementById("exito-estilo");
+      errorEl.textContent = "";
+      exitoEl.textContent = "";
+
+      try {
+        const response = await fetch(`${API_URL}/api/restaurants/me/catalog-style`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          body: JSON.stringify({ style: n })
+        });
+
+        if (!response.ok) {
+          errorEl.textContent = t.noSePudoGuardarEstilo;
+          return;
+        }
+
+        miRestaurante.catalogStyle = n;
+        marcarEstilo();
+        exitoEl.textContent = t.estiloGuardado;
+      } catch (err) {
+        errorEl.textContent = t.errorConexion;
+      }
+    }
     function mostrarLogo() {
       const div = document.getElementById("contenido-logo");
       div.style.display = div.style.display === "none" ? "block" : "none";
@@ -780,7 +1300,9 @@
       document.getElementById("editar-facebook").value = r.facebookLink ?? "";
       document.getElementById("editar-contacto-email").value = r.contactEmail ?? "";
 
-      document.getElementById("editar-categoria").value = r.category || "Comida";
+      const selCat = document.getElementById("editar-categoria");
+      selCat.value = r.category;
+      if (!selCat.value) selCat.value = "Comida Rápida";
 
       document.getElementById("error-perfil").textContent = "";
       document.getElementById("exito-perfil").textContent = "";
@@ -813,7 +1335,7 @@
         return;
       }
 
-      const partes = coordsTexto.split(",").map(p => parseFloat(p.trim()));
+            const partes = coordsTexto.split(",").map(p => parseFloat(p.trim()));
 
       const body = {
         name: document.getElementById("editar-nombre").value,
@@ -826,7 +1348,7 @@
         instagramLink: document.getElementById("editar-instagram").value || null,
         facebookLink: document.getElementById("editar-facebook").value || null,
         contactEmail: document.getElementById("editar-contacto-email").value || null,
-        category: document.getElementById("editar-categoria").value
+                category: document.getElementById("editar-categoria").value
       };
 
       const botonEl = document.getElementById("boton-guardar-perfil");
@@ -886,14 +1408,26 @@
       document.getElementById("boton-idioma").textContent = t.botonIdioma;
       document.getElementById("boton-mostrar-logo").textContent = t.logoNegocio;
       document.getElementById("boton-subir-logo").textContent = t.subirLogo;
-      document.getElementById("titulo-fotos-menu").textContent = t.fotosMenu;
-      document.getElementById("boton-subir-foto").textContent = t.subirFoto;
+      document.getElementById("boton-estilo").textContent = t.estiloCatalogo;
+      document.getElementById("texto-estilo").textContent = t.estiloTexto;
       document.getElementById("titulo-platos-menu").textContent = t.platosMenu;
       document.getElementById("boton-agregar-plato").textContent = t.agregarPlato;
+      document.getElementById("boton-agregar-video").textContent = t.agregarVideo;
+      document.getElementById("titulo-form-videos").textContent = t.tituloVideos;
+      document.getElementById("video-1").placeholder = t.video1Placeholder;
+      document.getElementById("video-2").placeholder = t.video2Placeholder;
+      document.getElementById("etiqueta-oferta").textContent = t.etiquetaOferta;
+      document.getElementById("video-oferta").placeholder = t.videoOfertaPlaceholder;
+      document.getElementById("nota-videos-form").textContent = t.notaVideosOferta;
+      document.getElementById("boton-guardar-videos").textContent = t.guardarVideos;
+      document.getElementById("boton-cancelar-videos").textContent = t.cancelar;
+      document.getElementById("nota-precio").textContent = t.notaPrecio;
       document.getElementById("boton-cancelar-plato").textContent = t.cancelar;
       document.getElementById("titulo-form-editar").textContent = t.editarPerfil;
       document.getElementById("boton-cancelar-perfil").textContent = t.cancelar;
       document.getElementById("boton-guardar-plato").textContent = t.guardarPlato;
+      document.getElementById("etiqueta-elegir-foto").textContent = t.elegirFoto;
+      document.getElementById("texto-oferta").textContent = t.marcarOferta;
       document.getElementById("boton-guardar-perfil").textContent = t.guardarCambios;
       document.getElementById("titulo-form-plato").textContent = modoFormPlato === "editar" ? t.editarPlato : t.nuevoPlato;
 
@@ -909,6 +1443,7 @@
       document.getElementById("editar-instagram").placeholder = t.instagramPlaceholder;
       document.getElementById("editar-facebook").placeholder = t.facebookPlaceholder;
       document.getElementById("editar-contacto-email").placeholder = t.contactoEmailPlaceholder;
+
 
       const selectCategoria = document.getElementById("editar-categoria");
       Array.from(selectCategoria.options).forEach(opcion => {
@@ -931,6 +1466,17 @@
     aplicarIdioma(idiomaActual);
 
     cargarMiPerfil();
+
+    // Botón "atrás" del celular: volver al inicio (solo en la app)
+    (function () {
+      const AppPlugin = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App;
+      const enApp = window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform();
+      if (AppPlugin && enApp) {
+        AppPlugin.addListener("backButton", () => {
+          window.location.href = "index.html";
+        });
+      }
+    })();
   </script>
 
 

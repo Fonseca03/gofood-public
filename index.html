@@ -16,9 +16,9 @@
       --borde: #E4DACB;
     }
     [data-tema="oscuro"] {
-      --fondo: #121212;
+      --fondo: #000000;
       --texto: #EFEFEF;
-            --acento: #3FBFD0;
+      --acento: #3FBFD0;
       --acento-claro: #6AD3E0;
       --acento-oscuro: #2AA3B5;
       --acento-texto: #121212;
@@ -118,8 +118,84 @@
     }
 
 
+    #boton-cercania img {
+      height: 1.15em;
+      width: auto;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+    .filtro-toggle {
+      display: block;
+      width: 100%;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+    .filtro-toggle input { display: none; }
+    .filtro-toggle span { text-align: left; }
+    .filtro-toggle span::before {
+      content: "";
+      display: inline-block;
+      width: 13px;
+      margin-right: 8px;
+    }
+    #boton-cercania { text-align: left; }
+    #boton-cercania img {
+      width: 13px;
+      object-fit: contain;
+      margin-right: 8px;
+    }
+    .filtro-toggle span {
+      display: block;
+      box-sizing: border-box;
+      text-align: left;
+      border: 2px solid var(--acento);
+      border-radius: 20px;
+      padding: 10px 16px;
+      font-size: 15px;
+      font-weight: bold;
+      color: var(--acento);
+      background: var(--fondo);
+    }
+      .filtro-toggle input:checked + span::after {
+      content: " ✓";
+    }
     .estado-abierto { color: var(--abierto); font-weight: bold; }
-    .estado-cerrado { color: var(--cerrado); font-weight: bold; }
+        .estado-cerrado { color: var(--cerrado); font-weight: bold; }
+    
+    @keyframes brillo-oferta {
+      0%, 100% { box-shadow: 0 0 6px 1px rgba(79, 216, 255, 0.5), 0 0 14px 3px rgba(79, 216, 255, 0.25); }
+      50% { box-shadow: 0 0 14px 4px rgba(79, 216, 255, 0.95), 0 0 30px 10px rgba(79, 216, 255, 0.55); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .resultado.con-oferta { animation: none; box-shadow: 0 0 12px 3px rgba(79, 216, 255, 0.8); }
+    }
+    .resultado.con-oferta {
+      border-color: #4fd8ff;
+      animation: brillo-oferta 2s ease-in-out infinite;
+    }
+    
+    
+    .tile.con-oferta {
+      border-color: #4fd8ff;
+      animation: brillo-oferta 2s ease-in-out infinite;
+    }
+    .punto.con-oferta span {
+      animation: brillo-oferta 2s ease-in-out infinite;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .tile.con-oferta, .punto.con-oferta span { animation: none; box-shadow: 0 0 12px 3px rgba(79, 216, 255, 0.8); }
+    }
+    .etiqueta-oferta {
+      display: inline-block;
+      background: #d62828;
+      color: #fff;
+      font-size: 12px;
+      font-weight: bold;
+      padding: 3px 10px;
+      border-radius: 6px;
+      margin-left: 14px;
+      vertical-align: middle;
+    }
 
 
     .resultado {
@@ -128,6 +204,8 @@
       padding: 12px;
       margin-bottom: 10px;
     }
+    #resultados { margin-top: 30px; }
+    #resultados .resultado { margin-bottom: 30px; -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; }
     .logo-mini {
       width: 60px;
       height: 60px;
@@ -292,10 +370,22 @@
       min-height: 440px;
       max-height: 760px;
       margin-top: 8px;
-      border-radius: 16px;
-      overflow: hidden;
-      background: url(mapa/fondo.jpg) center / cover no-repeat;
+            overflow: hidden;
+      background: transparent;
     }
+
+    /* Fondo de mapa a pantalla completa */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: -1;
+      background: url(mapa/fondoapp.jpg) center / cover no-repeat;
+    }
+    [data-tema="oscuro"] body::before {
+      background: #000000;
+    }
+    body.sin-mapa::before { display: none; }
     .header-superior { margin-bottom: 6px; }
     .punto {
       position: absolute;
@@ -307,7 +397,8 @@
       max-width: 46%;
     }
     .punto img { width: 24px; height: auto; flex-shrink: 0; filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.4)); }
-    .punto span {
+      .punto span {
+      white-space: pre;
       background: rgba(255, 255, 255, 0.9);
       color: #12324f;
       font-weight: 800;
@@ -319,7 +410,14 @@
     }
     .punto.grande img { width: 32px; }
     .punto.grande span { font-size: 16px; }
-    .punto:active { transform: translateY(-50%) scale(0.95); }
+    [data-tema="oscuro"] .punto span {
+      background: #000000;
+      color: #FFFFFF;
+      border: 1px solid #FFFFFF;
+      box-shadow: none;
+    }
+    .punto { transition: transform 0.12s ease; -webkit-tap-highlight-color: transparent; }
+    .punto:active { transform: translateY(-50%) scale(0.88); }
     .tile-ico {
       width: 84px;
       height: 84px;
@@ -407,7 +505,7 @@
 
 <div id="filtros" style="display: none; text-align: center;">
 
-    <select id="filtro-categoria" class="filtro-select" onchange="grupoActivo = null; buscar()" style="width: auto; display: inline-block; margin-right: 10px;">
+    <select id="filtro-categoria" class="filtro-select" onchange="grupoActivo = null; buscar()" style="width: auto; display: block; margin: 0 auto 16px auto; text-align: center; text-align-last: center;">
     <option value="" id="opcion-categoria-default">Todos los negocios</option>
     <option value="Almuerzos">Almuerzos</option>
         <option value="Bodegas y Minimarkets">Bodegas y Minimarkets</option>
@@ -456,18 +554,12 @@
     <button type="button" id="boton-filtros-mas" onclick="toggleFiltrosMas()">⚙️ <span id="texto-filtros-mas">Más filtros</span></button>
     <div id="menu-filtros-mas" style="display: none; position: absolute; top: 100%; left: 0; margin-top: 4px; background: var(--fondo); border: 1px solid var(--borde); border-radius: 8px; padding: 12px; text-align: left; box-shadow: 0 2px 8px rgba(0,0,0,0.15); z-index: 10; min-width: 220px;">
 
-      <label style="display: block; margin-bottom: 10px; font-weight: normal;">
-        <input type="checkbox" id="solo-abiertos" checked onchange="buscar()" style="display: inline-block; width: auto; margin-right: 6px;">
+      <label class="filtro-toggle">
+        <input type="checkbox" id="solo-abiertos" checked onchange="buscar()">
         <span id="texto-solo-abiertos">Solo abiertos</span>
       </label>
 
-        <select id="orden-precio" class="filtro-select" onchange="buscar()" style="width: 100%; margin-bottom: 10px;">
-        <option value="" id="opcion-precio-default">Ordenar platos por precio</option>
-        <option value="asc" id="opcion-precio-asc">Precio: menor a mayor</option>
-        <option value="desc" id="opcion-precio-desc">Precio: mayor a menor</option>
-      </select>
-
-      <button type="button" id="boton-cercania" onclick="activarCercania()" style="width: 100%;">📍 Ordenar por cercanía</button>
+      <button type="button" id="boton-cercania" onclick="activarCercania()" style="width: 100%;"><img src="mapa/flecha.png" alt=""><span id="texto-cercania">Más cercano</span></button>
     </div>
   </div>
 </div>
@@ -515,32 +607,15 @@
         { id: "cafeterias", img: "comida/cafeterias.jpg", es: "Cafeterías", en: "Cafés", categorias: ["Cafeterías"] },
         { id: "helados", img: "comida/helados.jpg", es: "Helados", en: "Ice cream", categorias: ["Helados"] },
         { id: "shawarmas", img: "comida/shawarmas.jpg", es: "Shawarmas", en: "Shawarmas", categorias: ["Shawarmas"] },
+        { id: "parrillas", img: "comida/parrillas.jpg", es: "Parrillas", en: "Grill", categorias: ["Parrillas"] },
+        { id: "ensaladas", img: "comida/ensaladas.jpg", es: "Ensaladas", en: "Salads", categorias: ["Ensaladas"] },
+        { id: "pollo", img: "comida/pollo.jpg", es: "Pollo", en: "Chicken", categorias: ["Pollo", "Pollo al Horno"] },
         { id: "comida-otros", img: "comida/otros.jpg", es: "Otros", en: "Other", categorias: ["Comida Rápida", "Comida Rapida", "Comida"] }
       ] },
-      { id: "almuerzos", es: "Almuerzos", en: "Lunch", x: 58, y: 6, grande: true, subgrupos: [
-        { id: "pabellon", img: "almuerzos/pabellon-criollo.jpg", es: "Pabellón criollo", en: "Pabellón criollo", categorias: ["Pabellón Criollo"] },
-        { id: "bandeja-paisa", img: "almuerzos/bandeja-paisa.jpg", es: "Bandeja paisa", en: "Bandeja paisa", categorias: ["Bandeja Paisa"] },
-        { id: "arroz-con-pollo", img: "almuerzos/arroz-con-pollo.jpg", es: "Arroz con pollo", en: "Chicken & rice", categorias: ["Arroz con Pollo"] },
-        { id: "pollo", img: "almuerzos/pollo.jpg", es: "Pollo", en: "Chicken", categorias: ["Pollo"] },
-        { id: "pollo-horno", img: "almuerzos/pollo-al-horno.jpg", es: "Pollo al horno", en: "Roast chicken", categorias: ["Pollo al Horno"] },
-        { id: "milanesas", img: "almuerzos/milanesa-de-pollo.jpg", es: "Milanesas", en: "Milanesas", categorias: ["Milanesas"] },
-        { id: "chuleta", img: "almuerzos/chuleta-cerdo.jpg", es: "Chuleta de cerdo", en: "Pork chop", categorias: ["Chuleta de Cerdo"] },
-        { id: "parrillas", img: "almuerzos/parrillas.jpg", es: "Parrillas", en: "Grill", categorias: ["Parrillas"] },
-        { id: "pastas", img: "almuerzos/pastas.jpg", es: "Pastas", en: "Pasta", categorias: ["Pastas"] },
-        { id: "pasticho", img: "almuerzos/pasticho.jpg", es: "Pasticho", en: "Lasagna", categorias: ["Pasticho"] },
-        { id: "comida-china", img: "almuerzos/comida-china.jpg", es: "Comida china", en: "Chinese food", categorias: ["Comida China"] },
-        { id: "mar", img: "almuerzos/comida-de-mar.jpg", es: "Comida de mar", en: "Seafood", categorias: ["Comida de Mar"] },
-        { id: "ensaladas", img: "almuerzos/ensaladas.jpg", es: "Ensaladas", en: "Salads", categorias: ["Ensaladas"] },
-        { id: "sopas", img: "almuerzos/sopas.jpg", es: "Sopas", en: "Soups", categorias: ["Sopas"], filtros: [
-          { es: "Hervido", en: "Hervido", q: "hervido" },
-          { es: "Mondongo", en: "Mondongo", q: "mondongo" },
-          { es: "Sancocho", en: "Sancocho", q: "sancocho" }
-        ] },
-        { id: "almuerzos-otros", img: "almuerzos/otros.jpg", es: "Otros almuerzos", en: "Other lunches", categorias: ["Almuerzos"] }
-      ] },
-      { id: "profesionales", es: "Servicios profesionales", en: "Professional services", x: 1, y: 28, categorias: ["Servicios Profesionales"] },
+      { id: "almuerzos", es: "Almuerzos", en: "Lunch", x: 58, y: 6, grande: true, categorias: ["Almuerzos", "Pabellón Criollo", "Bandeja Paisa", "Arroz con Pollo", "Pollo", "Pollo al Horno", "Milanesas", "Chuleta de Cerdo", "Parrillas", "Pastas", "Pasticho", "Comida China", "Comida de Mar", "Ensaladas", "Sopas"] },
+      { id: "profesionales",   es: "Servicios\nprofesionales", en: "Professional\nservices", x: 1, y: 28, categorias: ["Servicios Profesionales"] },
       { id: "restobar", es: "Resto-bar", en: "Resto-bar", x: 6, y: 49, categorias: ["Resto-Bar"] },
-      { id: "alimentos", es: "Alimentos y bebidas", en: "Food & drinks", x: 1, y: 19, subgrupos: [
+      { id: "alimentos", es: "Mercado y víveres", en: "Groceries & markets", x: 1, y: 19, subgrupos: [
         { id: "supermercados", img: "alimentacion/supermercados.png", es: "Supermercados", en: "Supermarkets", categorias: ["Supermercados"] },
         { id: "minimercados", img: "alimentacion/minimercados.png", es: "Minimercados", en: "Mini-markets", categorias: ["Minimercados"] },
         { id: "bodegas", img: "alimentacion/bodegas.png", es: "Bodegas", en: "Corner stores", categorias: ["Bodegas", "Bodegas y Minimarkets"] },
@@ -564,6 +639,10 @@
         { id: "salud-otros", img: "asistenciamedica/otros.jpg", es: "Otros", en: "Other", categorias: ["Otros Servicios de Salud"] }
       ] },
       { id: "farmacias", es: "Farmacias", en: "Pharmacies", x: 18, y: 38, grande: true, categorias: ["Farmacias"] },
+      { id: "tecnologia", es: "Servicio Técnico", en: "Technical Service", x: 58, y: 39, subgrupos: [
+        { id: "tecnico-celulares", img: "tecnologia/tecnico-celulares.jpg", es: "Servicio técnico de celulares", en: "Cell phone repair", categorias: ["Servicio Técnico de Celulares"] },
+        { id: "tecnico-computadoras", img: "tecnologia/tecnico-computadoras.jpg", es: "Servicio técnico de computadoras", en: "Computer repair", categorias: ["Servicio Técnico de Computadoras"] }
+      ] },
       { id: "mascotas", es: "Mascotas", en: "Pets", x: 12, y: 61, subgrupos: [
         { id: "veterinarias", img: "veterinarias.jpg", es: "Veterinarias", en: "Veterinarians", categorias: ["Veterinarias"] },
         { id: "tiendas-mascotas", img: "mascotas/tiendas-mascotas.jpg", es: "Tiendas para mascotas", en: "Pet stores", categorias: ["Tiendas de Mascotas"] },
@@ -583,12 +662,12 @@
         { id: "posadas", img: "hospedaje/posadas.jpg", es: "Posadas", en: "Inns", categorias: ["Posadas"] },
         { id: "moteles", img: "hospedaje/moteles.jpg", es: "Moteles", en: "Motels", categorias: ["Moteles"] }
       ] },
-      { id: "festejos", es: "Festejos y animación", en: "Parties & entertainment", x: 50, y: 49, subgrupos: [
+      { id: "festejos",   es: "Festejos y\nanimación", en: "Parties &\nentertainment", x: 50, y: 49, subgrupos: [
         { id: "festejos-f", img: "festejos/festejos.jpg", es: "Festejos", en: "Parties", categorias: ["Festejos"] },
         { id: "animacion", img: "festejos/animacion.jpg", es: "Animación", en: "Entertainment", categorias: ["Animación"] },
         { id: "floristerias", img: "festejos/floristerias.jpg", es: "Floristerías", en: "Florists", categorias: ["Floristerías"] }
       ] },
-      { id: "ferreteria", es: "Hogar y construcción", en: "Home & construction", x: 2, y: 72, subgrupos: [
+      { id: "ferreteria",   es: "Hogar y\nconstrucción", en: "Home &\nconstruction", x: 2, y: 72, subgrupos: [
         { id: "ferreterias", img: "ferreteria/ferreterias.jpg", es: "Ferreterías", en: "Hardware stores", categorias: ["Ferreterías"] },
         { id: "materiales", img: "ferreteria/materiales.jpg", es: "Materiales de construcción", en: "Building materials", categorias: ["Materiales de Construcción"] },
                 { id: "tecnicos", img: "ferreteria/tecnicos.jpg", es: "Servicios técnicos", en: "Repair services", categorias: ["Servicios Técnicos"] }
@@ -606,7 +685,9 @@
       ] },
       { id: "tiendas", es: "Tiendas y compras", en: "Shops", x: 1, y: 84, subgrupos: [
         { id: "papelerias", img: "tiendas/papelerias.jpg", es: "Papelerías", en: "Stationery", categorias: ["Papelerías"] },
-        { id: "merceria", img: "tiendas/mercerias.jpg", es: "Mercerías", en: "Haberdashery", categorias: ["Mercerías"] }
+        { id: "merceria", img: "tiendas/mercerias.jpg", es: "Mercerías", en: "Haberdashery", categorias: ["Mercerías"] },
+        { id: "venta-celulares", img: "tecnologia/venta-celulares.jpg", es: "Venta de celulares", en: "Cell phone sales", categorias: ["Venta de Celulares"] },
+        { id: "venta-computadoras", img: "tecnologia/venta-computadoras.jpg", es: "Venta de computadoras", en: "Computer sales", categorias: ["Venta de Computadoras"] }
       ] },
       { id: "transporte", es: "Transporte", en: "Transport", x: 20, y: 96, subgrupos: [
                 { id: "taxis", img: "transporte/taxis.jpg", es: "Taxis", en: "Taxis", categorias: ["Taxis"] },
@@ -627,6 +708,42 @@
     let menuActual = null;    // grupo cuyos cuadritos (subgrupos) se están mostrando
 
     let filtroActivo = null;  // botoncito elegido dentro de un grupo (ej: mondongo)
+
+    // Categorías que tienen al menos un negocio (null = todavía no se sabe, se muestra todo)
+    let categoriasConNegocios = null;
+
+    // Categorías que tienen al menos un negocio ABIERTO con oferta
+    let categoriasConOferta = new Set();
+
+    // Locales con oferta que la persona ya visitó (se olvida al cerrar la app)
+    function ofertasVistas() {
+      try { return JSON.parse(sessionStorage.getItem("ofertas-vistas") || "[]"); }
+      catch (e) { return []; }
+    }
+
+    function grupoTieneOferta(g) {
+      const cats = [...(g.categorias || []), ...(g.subgrupos || []).flatMap(s => s.categorias || [])];
+      return cats.some(c => categoriasConOferta.has(c));
+    }
+
+    function subgrupoTieneNegocios(s) {
+      if (!categoriasConNegocios) return true;
+      return (s.categorias || []).some(c => categoriasConNegocios.has(c));
+    }
+
+    async function cargarCategoriasConNegocios() {
+      try {
+        const respuesta = await fetch(`${API_URL}/api/restaurants`);
+        if (!respuesta.ok) return;
+        const lista = await respuesta.json();
+        categoriasConNegocios = new Set(lista.map(r => r.category).filter(Boolean));
+        const vistas = ofertasVistas();
+        categoriasConOferta = new Set(lista.filter(r => r.hasOffer && r.isOpen && !vistas.includes(r.id)).map(r => r.category).filter(Boolean));
+        dibujarInicio();
+      } catch (e) {
+        // si falla, se muestran todos los cuadros como antes
+      }
+    }
 
     function dibujarChips() {
       const cont = document.getElementById("chips-filtro");
@@ -665,19 +782,29 @@
       return GRUPOS.find(g => g.subgrupos && g.subgrupos.some(s => s.id === id)) || null;
     }
 
+
+
+
     function dibujarInicio() {
       // Pantalla principal: las flechas sobre el mapa
       document.getElementById("mapa-inicio").innerHTML = GRUPOS.map(g => `
-        <div class="punto ${g.grande ? "grande" : ""}" style="left: ${g.x}%; top: ${g.y}%;" role="button" tabindex="0" onclick="abrirGrupo('${g.id}')" onkeypress="if(event.key === 'Enter') abrirGrupo('${g.id}')">
+                <div class="punto ${g.grande ? "grande" : ""}${grupoTieneOferta(g) ? " con-oferta" : ""}" style="left: ${g.x}%; top: ${g.y}%;" role="button" tabindex="0" onclick="setTimeout(() => abrirGrupo('${g.id}'), 130)" onkeypress="if(event.key === 'Enter') abrirGrupo('${g.id}')">
           <img src="mapa/flecha.png" alt="">
           <span>${g[idiomaActual]}</span>
         </div>
       `).join("");
 
+
+
       // Cuadros de los subgrupos (solo cuando se entró a un grupo)
       const padre = menuActual ? GRUPOS.find(g => g.id === menuActual) : null;
-      document.getElementById("inicio").innerHTML = padre ? padre.subgrupos.map(g => `
-        <div class="tile" role="button" tabindex="0" onclick="abrirGrupo('${g.id}')" onkeypress="if(event.key === 'Enter') abrirGrupo('${g.id}')">
+      const visibles = padre ? padre.subgrupos.filter(subgrupoTieneNegocios) : [];
+      if (padre && visibles.length === 0) {
+        document.getElementById("inicio").innerHTML = `<p style="grid-column: 1 / -1; text-align: center;">${traducciones[idiomaActual].proximamente}</p>`;
+        return;
+      }
+      document.getElementById("inicio").innerHTML = padre ? visibles.map(g => `
+        <div class="tile${grupoTieneOferta(g) ? " con-oferta" : ""}" role="button" tabindex="0" onclick="abrirGrupo('${g.id}')" onkeypress="if(event.key === 'Enter') abrirGrupo('${g.id}')">
           ${g.img ? `<img src="categorias/${g.img}" alt="" onerror="this.outerHTML='<div class=\\'tile-ico\\'>${g.ico || "📍"}</div>'">` : `<div class="tile-ico">${g.ico || "📍"}</div>`}
           <span>${g[idiomaActual]}</span>
         </div>
@@ -749,17 +876,19 @@
         ordenPrecioDefault: "Ordenar platos por precio",
         ordenPrecioAsc: "Precio: menor a mayor",
         ordenPrecioDesc: "Precio: mayor a menor",
-        botonCercania: "📍 Ordenar por cercanía",
-        botonCercaniaObteniendo: "📍 Obteniendo ubicación...",
-        botonCercaniaListo: "📍 Ordenado por cercanía ✓",
+                botonCercania: "Más cercano",
+        botonCercaniaObteniendo: "Obteniendo ubicación...",
+        botonCercaniaListo: "Más cercano ✓",
                 categoriaDefault: "Todos los negocios",
         masFiltros: "Más filtros",
         escribiOElegi: "Escribí algo o elegí una categoría para buscar.",
         volver: "← Volver",
+        proximamente: "Pronto habrá negocios aquí.",
 
         errorConexion: "No se pudo conectar con la API.",
         sinResultados: "No se encontraron resultados.",
         abierto: "Abierto",
+        ofertas: "Ofertas",
         cerrado: "Cerrado",
         en: "En",
         tituloLogin: "Iniciar sesión - Restaurantes",
@@ -781,16 +910,18 @@
         ordenPrecioDefault: "Sort dishes by price",
         ordenPrecioAsc: "Price: low to high",
         ordenPrecioDesc: "Price: high to low",
-        botonCercania: "📍 Sort by distance",
-        botonCercaniaObteniendo: "📍 Getting location...",
-        botonCercaniaListo: "📍 Sorted by distance ✓",
+        botonCercania: "Nearest",
+        botonCercaniaObteniendo: "Getting location...",
+        botonCercaniaListo: "Nearest ✓",
                 categoriaDefault: "All businesses",
         masFiltros: "More filters",
         escribiOElegi: "Type something or choose a category to search.",
         volver: "← Back",
+        proximamente: "Businesses coming soon.",
         errorConexion: "Could not connect to the API.",
         sinResultados: "No results found.",
         abierto: "Open",
+        ofertas: "Offers",
         cerrado: "Closed",
         en: "At",
         tituloLogin: "Log in - Restaurants",
@@ -817,10 +948,7 @@
       document.getElementById("buscar").placeholder = t.buscarPlaceholder;
       document.getElementById("boton-buscar").textContent = t.botonBuscar;
       document.getElementById("texto-solo-abiertos").textContent = t.soloAbiertos;
-      document.getElementById("opcion-precio-default").textContent = t.ordenPrecioDefault;
-      document.getElementById("opcion-precio-asc").textContent = t.ordenPrecioAsc;
-      document.getElementById("opcion-precio-desc").textContent = t.ordenPrecioDesc;
-      document.getElementById("boton-cercania").textContent = t.botonCercania;
+      document.getElementById("texto-cercania").textContent = t.botonCercania;
     
       document.getElementById("opcion-categoria-default").textContent = t.categoriaDefault;
       document.getElementById("texto-filtros-mas").textContent = t.masFiltros;
@@ -853,6 +981,32 @@
 
     let ubicacionUsuario = null;
 
+    // ===== Tasa oficial del BCV (para mostrar el precio en Bs) =====
+    let tasaUsd = null;
+    let tasaPromesa = null;
+
+    function cargarTasa() {
+      if (tasaUsd) return Promise.resolve();
+      if (!tasaPromesa) {
+        tasaPromesa = fetch(`${API_URL}/api/tasa`)
+          .then(r => r.ok ? r.json() : Promise.reject())
+          .then(d => { tasaUsd = d.usd; })
+          .catch(() => { tasaPromesa = null; });
+      }
+      return tasaPromesa;
+    }
+
+    function formatoBs(n) {
+      const [entero, decimales] = n.toFixed(2).split(".");
+      return entero.replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "," + decimales;
+    }
+
+    function textoPrecio(usd) {
+      const base = `$${Number(usd).toFixed(2)}`;
+      if (!tasaUsd) return base;
+      return `${base} · Bs ${formatoBs(Number(usd) * tasaUsd)}`;
+    }
+
 
 
 
@@ -865,7 +1019,7 @@
         return;
       }
 
-      boton.textContent = t.botonCercaniaObteniendo;
+      document.getElementById("texto-cercania").textContent = t.botonCercaniaObteniendo;
       boton.disabled = true;
 
       navigator.geolocation.getCurrentPosition(
@@ -874,13 +1028,13 @@
             lat: posicion.coords.latitude,
             lng: posicion.coords.longitude
           };
-          boton.textContent = t.botonCercaniaListo;
+          document.getElementById("texto-cercania").textContent = t.botonCercaniaListo;
           boton.disabled = false;
           buscar();
         },
         (error) => {
           alert(t.errorGeoPermiso);
-          boton.textContent = t.botonCercania;
+          document.getElementById("texto-cercania").textContent = t.botonCercania;
           boton.disabled = false;
         }
       );
@@ -919,23 +1073,21 @@
       sessionStorage.setItem("busqueda-categoria", categoria);
       sessionStorage.setItem("busqueda-grupo", grupoActivo || "");
       sessionStorage.setItem("busqueda-abiertos", document.getElementById("solo-abiertos").checked);
-      sessionStorage.setItem("busqueda-precio", document.getElementById("orden-precio").value);
-
       const hayBusqueda = q || categoria;
       document.getElementById("inicio").style.display = (!hayBusqueda && menuActual) ? "grid" : "none";
       document.getElementById("mapa-inicio").style.display = (!hayBusqueda && !menuActual) ? "block" : "none";
+      document.body.classList.toggle("sin-mapa", !!(hayBusqueda || menuActual));
       document.getElementById("boton-volver").style.display = (hayBusqueda || menuActual) ? "block" : "none";
       document.getElementById("filtros").style.display = hayBusqueda ? "block" : "none";
 
       if (!hayBusqueda) return;
 
       const soloAbiertos = document.getElementById("solo-abiertos").checked;
-      const sortPrice = document.getElementById("orden-precio").value;
-      let url = `${API_URL}/api/search?q=${encodeURIComponent(q)}&openOnly=${soloAbiertos}&sortPrice=${sortPrice}&category=${encodeURIComponent(categoria)}`;
+      let url = `${API_URL}/api/search?q=${encodeURIComponent(q)}&openOnly=${soloAbiertos}&category=${encodeURIComponent(categoria)}`;
       if (ubicacionUsuario) {
         url += `&userLat=${ubicacionUsuario.lat}&userLng=${ubicacionUsuario.lng}`;
       }
-      const response = await fetch(url);
+      const [response] = await Promise.all([fetch(url), cargarTasa()]);
       const data = await response.json();
 
       if (data.restaurants.length === 0 && data.menuItems.length === 0) {
@@ -945,31 +1097,21 @@
 
       data.restaurants.forEach(r => {
         resultadosEl.innerHTML += `
-          <div class="resultado">
-            <h3><a href="restaurante.html?id=${r.id}">${r.logoUrl ? `<img class="logo-mini" src="${r.logoUrl}">` : ""}${r.name}</a></h3>
+          <div class="resultado${r.hasOffer && r.isOpen && !ofertasVistas().includes(r.id) ? " con-oferta" : ""}" style="cursor:pointer;" onclick="window.location.href='restaurante.html?id=${r.id}'">
+            <h3><a href="restaurante.html?id=${r.id}">${r.logoUrl ? `<img class="logo-mini" src="${r.logoUrl}">` : ""}${r.name}</a>${r.hasOffer ? `<span class="etiqueta-oferta">${t.ofertas}</span>` : ""}</h3>
             <p>${r.address} — ${r.isOpen ? `<span class='estado-abierto'>${t.abierto}</span>` : `<span class='estado-cerrado'>${t.cerrado}</span>`}</p>
           </div>
         `;
       });
 
-      data.menuItems.forEach(m => {
-        if (sortPrice) {
-          resultadosEl.innerHTML += `
-            <div class="resultado">
-              <h3><a href="restaurante.html?id=${m.restaurantId}">${m.name} - $${m.price}</a></h3>
-              <p>${m.description ?? ""}</p>
-              <p><em style="color: var(--acento);">${t.en}: ${m.restaurantName}</em></p>
-            </div>
-          `;
-        } else {
-          resultadosEl.innerHTML += `
-            <div class="resultado">
-              <h3>${m.restaurantName}</h3>
-              <p>${m.description ?? ""}</p>
-              <p><a href="restaurante.html?id=${m.restaurantId}">${m.name} - $${m.price}</a></p>
-            </div>
-          `;
-        }
+        data.menuItems.forEach(m => {
+        resultadosEl.innerHTML += `
+          <div class="resultado" style="cursor:pointer;" onclick="window.location.href='restaurante.html?id=${m.restaurantId}'">
+            <h3>${m.restaurantName}</h3>
+            <p>${m.description ?? ""}</p>
+            <p><a href="restaurante.html?id=${m.restaurantId}">${m.name}${m.price > 0 ? ` - ${textoPrecio(m.price)}` : ""}</a></p>
+          </div>
+        `;
       });
     }
 
@@ -1003,7 +1145,18 @@
         });
 
                 if (!response.ok) {
-          errorEl.textContent = traducciones[idiomaActual].errorLogin;
+          let mensaje = traducciones[idiomaActual].errorLogin;
+          if (response.status === 403) {
+            try {
+              const datos = await response.json();
+              if (datos.expired) {
+                mensaje = idiomaActual === "en"
+                  ? "Your Ubik plan has expired. To reactivate your business and recover all your information, please contact us."
+                  : datos.message;
+              }
+            } catch (e) {}
+          }
+          errorEl.textContent = mensaje;
           return;
         }
 
@@ -1045,7 +1198,6 @@
       if (qGuardado) document.getElementById("buscar").style.display = "block";
             document.getElementById("filtro-categoria").value = grupoGuardado ? "" : (categoriaGuardada || "");
       document.getElementById("solo-abiertos").checked = sessionStorage.getItem("busqueda-abiertos") === "true";
-      document.getElementById("orden-precio").value = sessionStorage.getItem("busqueda-precio") || "";
       buscar();
     }
 
@@ -1058,7 +1210,45 @@
       barra.classList.add("en-app");
       document.body.appendChild(barra);
     }
-    restaurarBusqueda();
+        restaurarBusqueda();
+    cargarCategoriasConNegocios();
+
+        // ----- Botón "atrás" del celular (solo en la app) -----
+    // Usa el plugin oficial de Capacitor: nosotros decidimos qué hace el botón.
+    if (esApp && window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
+      const AppPlugin = window.Capacitor.Plugins.App;
+      let ultimoAtras = 0;
+
+      AppPlugin.addListener("backButton", () => {
+        // 1) Si el formulario de login está abierto, se cierra
+        const login = document.getElementById("login-restaurante");
+        if (login && login.classList.contains("activo")) {
+          login.classList.remove("activo");
+          return;
+        }
+
+        // 2) Si estamos dentro de un grupo, subgrupo o resultados, subir un nivel
+        const enNivel = document.getElementById("boton-volver").style.display === "block";
+        if (enNivel) {
+          volverAlInicio();
+          return;
+        }
+
+        // 3) Estamos en el inicio: con dos toques seguidos (2 segundos) se sale
+        const ahora = Date.now();
+        if (ahora - ultimoAtras < 2000) {
+          AppPlugin.exitApp();
+          return;
+        }
+        ultimoAtras = ahora;
+
+        const aviso = document.createElement("div");
+        aviso.textContent = idiomaActual === "en" ? "Press back again to exit" : "Tocá otra vez para salir";
+        aviso.style.cssText = "position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:rgba(0,0,0,0.8);color:#fff;padding:10px 18px;border-radius:20px;font-size:14px;z-index:99999;";
+        document.body.appendChild(aviso);
+        setTimeout(() => aviso.remove(), 2000);
+      });
+    }
   </script>
 
 </body>
